@@ -25,6 +25,11 @@ services:
     App\Controller\:
         resource: '../src/Controller/'
         tags: ['controller.service_arguments']
+    
+    # synthetic services don't specify a class
+    # security.context:
+    #     synthetic: true
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
