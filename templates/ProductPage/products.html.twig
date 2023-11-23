@@ -4,6 +4,12 @@
 
 {% block body %}
 
+{% for flash_message in app.session.flashBag.get('success') %}
+    <div class="alert alert-success">
+        {{ flash_message }}
+    </div>
+{% endfor %}
+
 <div class="container-fluid">
     {% include 'ProductPage/card.html.twig' %}
 </div>

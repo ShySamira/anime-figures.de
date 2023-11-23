@@ -15,6 +15,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Cart|null findOneBy(array $criteria, array $orderBy = null)
  * @method Cart[]    findAll()
  * @method Cart[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Cart[] findAllWithProducts()
  */
 class CartRepository extends ServiceEntityRepository
 {
@@ -47,6 +48,19 @@ class CartRepository extends ServiceEntityRepository
         }
     }
 
+    public function findAllWithProducts($user)
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->where('c.user = :user')
+            ->leftJoin('c.product', 'p')
+            ->addSelect('p')
+            ->setParameter('user', $user);
+
+        $query = $qb->getQuery();
+
+        return $query->execute();
+    }
+    
     // /**
     //  * @return Cart[] Returns an array of Cart objects
     //  */

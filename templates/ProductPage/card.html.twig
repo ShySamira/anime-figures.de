@@ -3,28 +3,28 @@
 
 {% for product in products %}
 
-{% if i % 4 == 0 %}
-<div class="row gx-5 mt-5">
-{% endif %}
-    <div class="col-3">
-        <div class="card">
-            <div class="card-header">{{ product.name }}</div>
-            <div class="card-body" style="padding: 0%">
-                <img src="https://placekitten.com/400/500" class="card-img" alt="loading failed" style="">
-            </div>
-            <div class="card-footer">
-                <p>test description, here is a nice desription of the product</p>
-                <a href="" class="btn btn-primary">Details</a>
-                <a href={{ '/product/add/' ~ product.id }} class="btn btn-success">Add to basket</a>
+    {% if i % 4 == 0 %}
+    <div class="row gx-5 mt-5">
+    {% endif %}
+
+        <div class="col-3">
+            <div class="card">
+                <div class="card-header">{{ product.name }}</div>
+                <div class="card-body" style="padding: 0%">
+                    <img src="https://placekitten.com/400/500" class="card-img" alt="loading failed" style="">
+                </div>
+                <div class="card-footer">
+                    <p>test description, here is a nice desription of the product</p>
+                    <a href="" class="btn btn-primary">Details</a>
+                    <a href={{ '/product/add/' ~ product.id }} class="btn btn-success">Add to basket</a>
+                </div>
             </div>
         </div>
+
+    {% if i % 4 == 3 %}    
     </div>
-{% if i % 4 == 3 %}    
-</div>
-{% endif %}
-{% set i = i + 1 %}
+    {% endif %}
 
-
-
-
+    {% set i = i + 1 %}
+    
 {% endfor %}

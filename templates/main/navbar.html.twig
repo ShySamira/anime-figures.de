@@ -1,9 +1,8 @@
 <nav class="py-2 bg-light border-bottom">
   <div class="container-fluid d-flex flex-wrap">
     <ul class="nav me-auto">
-      <li class="nav-item"><a href="#" class="nav-link link-dark px-2 active" aria-current="page">Home</a></li>
-      <li class="nav-item"><a href="#" class="nav-link link-dark px-2">Features</a></li>
-      <li class="nav-item"><a href="#" class="nav-link link-dark px-2">Pricing</a></li>
+      <li class="nav-item"><a href="{{ path('app_home') }}" class="nav-link link-dark px-2 active" aria-current="page">Home</a></li>
+      <li class="nav-item"><a href="{{ path('app_products') }}" class="nav-link link-dark px-2">Products</a></li>
       <li class="nav-item"><a href="#" class="nav-link link-dark px-2">FAQs</a></li>
       <li class="nav-item"><a href="#" class="nav-link link-dark px-2">About</a></li>
     </ul>
@@ -14,13 +13,17 @@
         </form>
       </li>
       <li class="nav-item">
-        <a href="#" class="nav-link link-dark px-2">
+        <a href="{{ path('orderProcess_basket') }}" class="nav-link link-dark px-2">
           {# <img src="/public/pictures/basket.png"> #}
           Basket
         </a>
       </li>
-      <li class="nav-item"><a href="#" class="nav-link link-dark px-2">Login</a></li>
-      <li class="nav-item"><a href="#" class="nav-link link-dark px-2">Sign up</a></li>
+      {% if is_granted('ROLE_USER') %}
+        <li class="nav-item"><a href="{{ path("app_logout")}}" class="nav-link link-dark px-2">Logout</a></li>
+      {% else %}
+        <li class="nav-item"><a href="{{ path('app_login') }}" class="nav-link link-dark px-2">Login</a></li>
+        <li class="nav-item"><a href="{{ path('app_register') }}" class="nav-link link-dark px-2">Sign up</a></li>
+      {% endif %}
     </ul>
   </div>
 </nav>

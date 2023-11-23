@@ -17,7 +17,7 @@ class MainController extends AbstractController
     public function home(): Response
     {
         
-        return $this->redirectToRoute('app_products');
+        return $this->render('/main/home.html.twig');
     }
 
     /**

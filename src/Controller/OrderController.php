@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Cart;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -9,12 +10,18 @@ use Symfony\Component\Routing\Annotation\Route;
 class OrderController extends AbstractController
 {
     /**
-     * @Route("/order", name="app_order")
+     * @Route("/orderProcess/basket", name="orderProcess_basket")
      */
-    public function index(): Response
+    public function basket(): Response
     {
-        return $this->render('order/index.html.twig', [
-            'controller_name' => 'OrderController',
+        $session = $this->get("session");
+        $session->set('activated', true);
+        $user = session_id();
+        $products = [];
+        $cartPosition = $this->getDoctrine()->getRepository(Cart::class)->findAllWithProducts($user);
+
+        return $this->render('orderProcess/basket.html.twig', [
+            'carts' => $cartPosition,
         ]);
     }
 }
