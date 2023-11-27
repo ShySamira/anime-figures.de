@@ -1,0 +1,114 @@
+{% extends '/main/base.html.twig' %}
+
+{% block title %}Choose Payment{% endblock %}
+
+{% block body %}
+{% set position = 1%}
+{% set netSubtotal = 0 %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-8">
+            <h1>Anime-Figures</h1>
+        </div>      
+    </div>
+
+    <div style="height: 100px;">
+
+    </div>
+    <div class="row">
+        <div style="font-size: small; color: blue">
+            anime-figures GmbH | Dr.Mack-Str. 83 | 90441 Fuerth
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-3">
+            {{ invoice.deliveryAddress.firstname }} {{ invoice.deliveryAddress.lastname }}<br>
+            {{ invoice.deliveryAddress.street }} {{ invoice.deliveryAddress.streetNumber}}<br>
+            {{ invoice.deliveryAddress.ZipCode }} {{ invoice.deliveryAddress.city }}<br>
+            {{ invoice.deliveryAddress.country}}
+        </div>
+        <div class="col-6">
+        </div>
+        <div class="col-3">
+            +49 9999 / 11 11 111 <br>
+            anime-figures@info.com <br>
+            www.anime-figures.com
+        </div>
+    </div>
+
+    <div class="row" style="height: 200px;">
+    </div>
+
+    <div class="row">
+        <div class="col-9">
+        </div>
+        <div class="col">
+            Invoice Date: {{ invoice.invoiceDate|date('d.m.Y') }}<br>
+            Delivery Date: {{ invoice.deliveryDate|date('d.m.Y') }}<br>
+            Customer Number: {{ invoice.deliveryAddress.user }}<br>
+            Invoice Number: {{ invoice.invoiceNumber }}
+        </div>
+    </div>
+
+    <div class="row">
+        <h3><b>Invoice</b></h3>
+        <hr>
+        <table>
+            <th>Pos.</th>
+            <th>Art.-Nr.</th>
+            <th>Title</th>
+            <th>Amount</th>
+            <th>Unitprice</th>
+            <th>Total Price</th>
+            {% for product in invoice.products %}
+            <tr>
+                <td>{{ position }}</td>
+                <td>{{ product.id }}</td>
+                <td>{{ product.name }}</td>
+                <td>{{ product.amount }}</td>
+                <td style="text-align: right;">{{ (product.netPrice / 100)|number_format(2, ',', '.')}} €</td>
+                <td style="text-align: right;">{{ (product.netPrice * product.amount / 100)|number_format(2, ',', '.')}} €</td>
+            </tr>
+            {% set position = position + 1 %}
+            {% set netSubtotal = netSubtotal + product.netPrice * product.amount %}
+            {% endfor %}
+        </table>
+        <hr>
+    </div>
+
+    <div class="row">
+        <div class="col-10" style="text-align: right;">
+            Net-Subtotal<br>
+            19,00% Tax<br>
+            <b>Subtotal</b>
+        </div>
+        <div class="col-2" style="text-align: right;">
+            {{ (netSubtotal / 100)|number_format(2, ',', '.')}} €<br>
+            {{ ((netSubtotal * 19 / 100) / 100)|number_format(2, ',', '.')}} €<br>
+            <b>{{ ((netSubtotal * 119 / 100) / 100)|number_format(2, ',', '.')}} €</b>
+        </div>
+    </div>
+
+    <div class="row" style="height: 100px;">
+    </div>
+
+    <div class="row">
+        <div class="col">
+            Delivery terms: Parcel Shipping<br>
+            10 days 5% discount, 30 days without deduction
+        </div>
+    </div>
+
+    <div class="row" style="height: 400px;">
+    </div>
+
+        <div class="row">
+            <div class="col" style="text-align: center;">
+                Anime-Figures GmbH | Sparkasse Nürnberg | IBAN DE35 2953 0000 0624 3623 65 | BIC DS1KAL3u | Place Of Business Fürth, Germany<br>
+                Managing Directors: Samira Sango | Commercial Register: AG Fürth HRB 123456 | USt-IdNr. DE32124252<br>
+                THIS IS NO VALID INVOICE lul 
+            </div>
+        </div>
+</div>
+{% endblock %}

@@ -1,5 +1,40 @@
+ToDo:
+-add product ID to InvoieProduct
+-system fuer rabatte: anzeige ueber produktbild
+
 Cart Entity:
 
 product/relation
 item_count/Int
 user/relation
+
+
+InvoiceObject
+
+invoice[
+    invoiceNumber => X
+    deliveryAddress[
+        street =>
+        Number =>
+        ...
+    ]
+    InvoiceProducts[
+        id => 1[
+            invoiceNumber => X
+            name => X
+            amount => X
+            NetPrice => X
+        ]
+        id => 2[
+            invoiceNumber => X
+            name => X
+            amount => X
+            NetPrice => X
+        ]
+    ]
+    InvoiceDate:
+    DelieryDate:
+]
+
+
+

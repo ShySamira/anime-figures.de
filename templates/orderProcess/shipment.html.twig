@@ -1,0 +1,67 @@
+{% extends '/main/base.html.twig' %}
+
+{% block title %}Shipment{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-5">
+    <h2>Available Addresses:</h3>
+    <div class="row">
+        {% for address in availableAddresses %}
+        <div class="col-2">
+            <div class="card" style="width: 18rem;">
+                <div class="card-header">
+                    <b>{{ address.firstName }} {{ address.lastName }}</b>
+                </div>
+                <div class="card-body">
+                    {{ address.street }} {{ address.streetNumber }}
+                    <br>
+                    {{ address.zipCode }} {{address.city}}
+                    <br>
+                    {{ address.country }}
+                </div>
+                <div class="card-footer">
+                    <a href={{ "/orderProcess/choosePayment/" ~ address.id }}><button class="btn btn-success" type="submit">Select</button></a>
+                </div>
+            </div>
+
+        </div>
+    {% endfor %}
+    </div>
+</div>
+
+<div class="container w-25 border mt-5" style="float: left;">
+    <h2>Enter new shipping Address:</h2>
+    {{ form(form) }}
+    <br>
+</div>
+
+
+
+
+
+{# <div class="container w-25">
+    <h2>Enter your shipping Address</h2>
+    <form action="/orderProcess/saveShipment">
+        <label for="firstName">First Name:</label><br>
+        <input type="text" id="firstName" name="firstName" required><br>
+    
+        <label for="lastName">Last Name:</label><br>
+        <input type="text" id="lastName" name="lastName" required><br>
+    
+        <label for="street">Street:</label>
+        <label for="streetNumber">Number:</label><br>
+        <input type="text" id="street" name="street" required>
+        <input type="number" id="streetNumber" name="streetNumber" required><br>
+    
+        <label for="zipCode">Zip Code:</label>
+        <label for="city">City:</label><br>
+        <input type="number" id="zipCode" name="zipCode" required>
+        <input type="text" id="city" name="city" required><br>
+    
+        {% include "/orderProcess/shipment_country_list.twig" %}<br>
+    
+        <input type="submit" id="submit" name="submit" value="Submit">
+    </form>
+</div> #}
+
+{% endblock %}
