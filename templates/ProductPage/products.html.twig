@@ -4,9 +4,17 @@
 
 {% block body %}
 
-{% for flash_message in app.session.flashBag.get('success') %}
+{% set flashbag_notices = app.session.flashBag.get('notice') %}
+{% for message in flashbag_notices %}
+<div class="alert alert-success">
+    {{ message }}
+</div>
+{% endfor %}
+
+{% set login_flashbag_notices = app.session.flashBag.get('success')%}
+{% for message in login_flashbag_notices %}
     <div class="alert alert-success">
-        {{ flash_message }}
+        {{ message }}
     </div>
 {% endfor %}
 

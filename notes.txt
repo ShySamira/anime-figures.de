@@ -2,6 +2,11 @@ ToDo:
 -add product ID to InvoieProduct
 -system fuer rabatte: anzeige ueber produktbild
 
+(JS)
+-make basket items deletable
+-show alt text on empty basket
+
+
 Cart Entity:
 
 product/relation

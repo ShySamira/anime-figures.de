@@ -14,12 +14,12 @@
       </li>
       <li class="nav-item">
         <a href="{{ path('orderProcess_basket') }}" class="nav-link link-dark px-2">
-          {# <img src="/public/pictures/basket.png"> #}
+          <img src="{{asset('/pictures/basket.png')}}" style="width: 2rem;">
           Basket
         </a>
       </li>
       {% if is_granted('ROLE_USER') %}
-        <li class="nav-item"><a href="{{ path("app_logout")}}" class="nav-link link-dark px-2">Logout</a></li>
+        <li class="nav-item"><a href="{{ path("app_logout")}}" class="nav-link link-dark px-2" style="margin-left: 1rem;">Logout</a></li>
       {% else %}
         <li class="nav-item"><a href="{{ path('app_login') }}" class="nav-link link-dark px-2">Login</a></li>
         <li class="nav-item"><a href="{{ path('app_register') }}" class="nav-link link-dark px-2">Sign up</a></li>

@@ -9,10 +9,22 @@ use App\Entity\ShipmentAddress;
 use App\Form\ShipmentAddressType;
 use DateTime;
 use DateTimeImmutable;
+use Dompdf\Dompdf;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Filesystem\Exception\IOException;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Encoder\JsonEncode;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Validator\Constraints\Date;
 
 class OrderController extends AbstractController
@@ -31,10 +43,10 @@ class OrderController extends AbstractController
         }
 
         $products = [];
-        $cartPosition = $this->getDoctrine()->getRepository(Cart::class)->findAllWithProducts($identifier);
+        $cartPositions = $this->getDoctrine()->getRepository(Cart::class)->findAllWithProducts($identifier);
 
         return $this->render('orderProcess/basket.html.twig', [
-            'carts' => $cartPosition,
+            'carts' => $cartPositions,
         ]);
     }
 
@@ -104,16 +116,19 @@ class OrderController extends AbstractController
 
         $entityManager = $this->getDoctrine()->getManager();
 
-        $address = $this->getDoctrine()->getRepository(ShipmentAddress::class)->find($id);
-        $cartPosition = $this->getDoctrine()->getRepository(Cart::class)->findAllWithProducts([
+        if(!$cartPositions = $this->getDoctrine()->getRepository(Cart::class)->findAllWithProducts([
             'user' => $identifier,
-        ]);
+        ])){
+            return $this->redirectToRoute('orderProcess_complete');
+        }
+        $address = $this->getDoctrine()->getRepository(ShipmentAddress::class)->find($id);
+
         $deliveryDate = new \DateTime();
         $deliveryDate->modify('+5 day');
         $deliveryDate = \DateTimeImmutable::createFromMutable($deliveryDate);
 
         $invoice = new Invoice();
-        foreach($cartPosition as $position){
+        foreach($cartPositions as $position){
             $netPrice = $position->getProduct()->getPrice() * 100 / 119;
             
             $invocieProduct = new InvoiceProduct;
@@ -123,11 +138,12 @@ class OrderController extends AbstractController
             
             $invoice->addProduct($invocieProduct);
             $entityManager->persist($invocieProduct);
+            $entityManager->remove($position);
         }
 
 
-
-        $invoice->setInvoiceNumber('IV' . random_int(100000,999999))
+        $invoiceNumber = 'IV' . random_int(100000,999999);
+        $invoice->setInvoiceNumber($invoiceNumber)
             ->setDeliveryAddress($address)
             ->setInvoiceDate(new \DateTimeImmutable())
             ->setDeliveryDate($deliveryDate);
@@ -135,8 +151,38 @@ class OrderController extends AbstractController
         $entityManager->persist($invoice);
         $entityManager->flush();
 
-        return $this->render('orderProcess/invoice.html.twig', [
-            'invoice' => $invoice,
-        ]);
+        $encoders = [new JsonEncoder()];
+        $normalizers = [new ObjectNormalizer()];
+        $serializer = new Serializer($normalizers, $encoders);
+
+        $normalizedInvoice = $serializer->normalize($invoice);
+
+        $html = $this->renderView('orderProcess/invoice.html.twig', $normalizedInvoice);
+        $pdf = new Dompdf();
+        $pdf->loadHtml($html);
+        $pdf->render();
+
+        $pdfPath = '../invoices/' . $invoiceNumber . '.pdf';
+        try {
+            file_put_contents($pdfPath, $pdf->output());
+        } catch(IOExceptionInterface $exception){
+            echo "An error occured creating the Invoice with number " . $invoiceNumber . 'at ' . $exception->getPath();
+        }
+        
+
+
+        return new Response(
+            $pdf->stream($invoiceNumber, ['Attachment' => 1]),
+            Response::HTTP_OK,
+            ['content-Type' => 'application/pdf']
+        );
+    }
+
+    /**
+    * @Route("/orderProcess/complete", name="orderProcess_complete")
+    */
+    public function createInvoicePDF()
+    {
+        return $this->render('orderProcess/orderComplete.html.twig');
     }
 }
