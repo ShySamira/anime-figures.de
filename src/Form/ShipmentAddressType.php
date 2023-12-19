@@ -16,13 +16,41 @@ class ShipmentAddressType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('firstname', TextType::class)
-            ->add('lastname', TextType::class)
-            ->add('street', TextType::class)
-            ->add('street_number', NumberType::class)
-            ->add('zip_code', NumberType::class)
-            ->add('city', TextType::class)
-            ->add('country', CountryType::class)
+            ->add('firstname', TextType::class,[
+                'attr' => [
+                    'style' => 'color: #D4ADFC; background-color: #0C134F',
+                ],
+            ])
+            ->add('lastname', TextType::class,[
+                'attr' => [
+                    'style' => 'color: #D4ADFC; background-color: #0C134F',
+                ],
+            ])
+            ->add('street', TextType::class,[
+                'attr' => [
+                    'style' => 'color: #D4ADFC; background-color: #0C134F',
+                ],
+            ])
+            ->add('street_number', NumberType::class,[
+                'attr' => [
+                    'style' => 'color: #D4ADFC; background-color: #0C134F',
+                ],
+            ])
+            ->add('zip_code', NumberType::class,[
+                'attr' => [
+                    'style' => 'color: #D4ADFC; background-color: #0C134F',
+                ],
+            ])
+            ->add('city', TextType::class,[
+                'attr' => [
+                    'style' => 'color: #D4ADFC; background-color: #0C134F',
+                ],
+            ])
+            ->add('country', CountryType::class,[
+                'attr' => [
+                    'style' => 'color: #D4ADFC; background-color: #0C134F',
+                ],
+            ])
             ->add('submit', SubmitType::class)
         ;
     }
@@ -31,6 +59,9 @@ class ShipmentAddressType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => ShipmentAddress::class,
+            'row_attr' => [
+                'style' => 'color: #D4ADFC; background-color: #0C134F',
+            ],
         ]);
     }
 }

@@ -2,17 +2,15 @@
 
 {% block title %}Choose Payment{% endblock %}
 
-{% block javascripts %}
-<script src="https://www.paypal.com/sdk/js?client-id=AQTumXIneeByovs8bT5FkX06mI2uLa2CEfCU-gjgDSFp8wxrlpbB0oW23rbYxmgoIZeY0YdByv4vscsl"></script>
-{% endblock %}
-
 {% block body %}
 <div class="container mt-5">
 
+    
         <div class="col-2">
             <div class="card">
                 PayPal
-                <a target='_blank' href={{ '/orderProcess/invoice/' ~ id }} class="card-link">Choose</a>
+                {# <a target='_blank' href={{ '/orderProcess/invoice/' ~ id }} class="card-link">Choose</a> #}
+                <a href="/orderProcess/payPal">Choose</a>
             </div>
         </div>
         <br>

@@ -1,11 +1,14 @@
 ToDo:
 -add product ID to InvoieProduct
 -system fuer rabatte: anzeige ueber produktbild
-
+-lock checkout for unauthentiated user
 (JS)
 -make basket items deletable
 -show alt text on empty basket
-
+(Fix)
+-show pdf
+-set NetPrice in Invoice Entity
+-create invoice service and implement at paymentmethod
 
 Cart Entity:
 

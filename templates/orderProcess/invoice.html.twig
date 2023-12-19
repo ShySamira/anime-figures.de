@@ -1,16 +1,13 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-        <link href="/public/styles/main.css" type="text/css" rel="stylesheet">
     </head>
     <body>
         {% set position = 1%}
         {% set netSubtotal = 0 %}
         <div>
-
             <h1>Anime-Figures</h1>
-
+            {# <img src="C:\Dev\projects\anime-figures.com\public\pictures\logo.png" alt="Logo"> #}
             <div style="position: absolute; top: 180px;">
                 <div style="font-size: x-small; color: blue">
                     Anime-Figures GmbH | Dr.Mack-Str. 83 | 90441 Fuerth
@@ -30,8 +27,8 @@
             </div>
 
             <div style="position: absolute; left: 530px; top: 320px;">
-                Invoice Date: {{ invoiceDate.timestamp|date('d.m.Y') }}<br>
-                Delivery Date: {{ deliveryDate.timestamp|date('d.m.Y') }}<br>
+                Invoice Date: {{ invoiceDate|date('d.m.Y') }}<br>
+                Delivery Date: {{ deliveryDate|date('d.m.Y') }}<br>
                 Customer Number: {{ deliveryAddress.user }}<br>
                 Invoice Number: {{ invoiceNumber }}
             </div>
@@ -50,10 +47,10 @@
                     </tr>
                     {% for product in products %}
                     <tr>
-                        <td style="border-right: 1px solid black;">{{ position }}</td>
-                        <td style="border-right: 1px solid black;">{{ product.id }}</td>
-                        <td style="border-right: 1px solid black;">{{ product.name }}</td>
-                        <td style="border-right: 1px solid black;">{{ product.amount }}</td>
+                        <td style="border-right: 1px solid black; text-align: center;">{{ position }}</td>
+                        <td style="border-right: 1px solid black; text-align: center;">{{ product.id }}</td>
+                        <td style="border-right: 1px solid black; text-align: center;">{{ product.name }}</td>
+                        <td style="border-right: 1px solid black; text-align: center;">{{ product.amount }}</td>
                         <td style="text-align: right; border-right: 1px solid black;">{{ (product.netPrice / 100)|number_format(2, ',', '.')}} €</td>
                         <td style="text-align: right;">{{ (product.netPrice * product.amount / 100)|number_format(2, ',', '.')}} €</td>
                     </tr>
