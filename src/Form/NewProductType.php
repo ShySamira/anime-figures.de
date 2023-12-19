@@ -34,9 +34,17 @@ class NewProductType extends AbstractType
             ->add('cancel', ButtonType::class, [
                 'attr' => [
                     'class' => 'btn-danger mt-4 ms-2',
+                    'onclick' => "window.location.href='https://127.0.0.1:8000/products'",
                 ],
                 'label' => 'Cancel',
-            ])
+                ])
+            ->add('submitDraft', SubmitType::class, [
+                'attr' => [
+                    'class' => 'btn-warning mt-2',
+                ],
+                'label' => 'Save as Draft',
+                ])
+            
         ;
     }
 

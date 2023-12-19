@@ -39,6 +39,16 @@ class Product
      */
     private $slug;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $state;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $pictureFilename;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -88,6 +98,30 @@ class Product
     public function setSlug(string $slug): self
     {
         $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getState(): ?string
+    {
+        return $this->state;
+    }
+
+    public function setState(string $state): self
+    {
+        $this->state = $state;
+
+        return $this;
+    }
+
+    public function getPictureFilename(): ?string
+    {
+        return $this->pictureFilename;
+    }
+
+    public function setPictureFilename(?string $pictureFilename): self
+    {
+        $this->pictureFilename = $pictureFilename;
 
         return $this;
     }

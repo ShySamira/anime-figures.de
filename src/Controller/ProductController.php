@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Cart;
 use App\Entity\Product;
+use App\Form\EditProductType;
 use App\Form\NewProductType;
+use App\Service\FileUploader;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -78,24 +80,64 @@ class ProductController extends AbstractController
     */
     public function newProduct(Request $request): Response
     {
-        $product = new Product();
+        $blockedSlugs = [
+            'new',
+            'delete',
+            'details',
+            'edit',
+        ];
 
         $form = $this->createForm(NewProductType::class);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid())
         {
+            $entityManager = $this->getDoctrine()->getManager();
             $product = $form->getData();
-            $slug = $product->getName();
+            $productName = $product->getName();
+
+            if($form->get('submitDraft')->isClicked())
+            {
+                $product->setState('draft');
+            }else
+            {
+                $product->setState('live');
+            }
+
+            if(in_array($productName, $blockedSlugs))
+            {
+                $this->addFlash(
+                    'error',
+                    'The generated Slug for the product name "' . $productName . '" is not available!',
+                );
+                return $this->render('/productPage/newProduct.html.twig',[
+                    'form' => $form->createView(),
+                ]);
+            }
+            if($this->getDoctrine()->getRepository(Product::class)->findOneBy(['name' => $productName]))
+            {
+                $this->addFlash(
+                    'error',
+                    'Could not save Product, the name already exists!'
+                );
+                return $this->render('/productPage/newProduct.html.twig',[
+                    'form' => $form->createView(),
+                ]);
+            }
+            $slug = $productName;
             strtolower($slug);
             str_replace(' ', '-', $slug);
             str_replace('.', '_', $slug);
 
             $product->setSlug($slug);
-
-            $entityManager = $this->getDoctrine()->getManager();
+            
             $entityManager->persist($product);
             $entityManager->flush();
+
+            $this->addFlash(
+                'notice',
+                'Product was saved succesfull!'
+            );
 
             return $this->redirectToRoute('app_products');
         }
@@ -104,4 +146,102 @@ class ProductController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
+    /**
+    * @Route("/product/edit/{id}", name="product_edit")
+    */
+    public function editProduct(int $id, Request $request, FileUploader $fileUploader): Response
+    {
+        $blockedSlugs = [
+            'new',
+            'delete',
+            'details',
+            'edit',
+        ];
+        $product = $this->getDoctrine()->getRepository(Product::class)->find($id);
+        $form = $this->createForm(EditProductType::class, $product);
+        $form->handleRequest($request);
+        
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $entityManager = $this->getDoctrine()->getManager();
+            $editedProduct = $form->getData();
+            $product->setName($editedProduct->getName());
+            $product->setDescription($editedProduct->getDescription());
+            $product->setPrice($editedProduct->getPrice());
+
+            $pictureFile = $form->get('picture')->getData();
+            if($pictureFile)
+            {
+                $pictureFilename = $fileUploader->upload($pictureFile);
+                $product->setPictureFilename($pictureFilename);
+            }
+            
+            $productName = $editedProduct->getName();
+
+            if(in_array($productName, $blockedSlugs))
+            {
+                $this->addFlash(
+                    'error',
+                    'The generated Slug for the product name "' . $productName . '" is not available!',
+                );
+                return $this->render('/productPage/editProduct.html.twig',[
+                    'form' => $form->createView(),
+                ]);
+            }
+            if($this->getDoctrine()->getRepository(Product::class)->findOneBy(['name' => $productName])->getId() != $id)
+            {
+                $this->addFlash(
+                    'error',
+                    'Could not save Product, the name already exists for a different product!'
+                );
+                return $this->render('/productPage/newProduct.html.twig',[
+                    'form' => $form->createView(),
+                ]);
+            }
+            $slug = $productName;
+            strtolower($slug);
+            str_replace(' ', '-', $slug);
+            str_replace('.', '_', $slug);
+
+            $editedProduct->setSlug($slug);
+
+            
+            $entityManager->persist($editedProduct);
+            $entityManager->flush();
+
+            $this->addFlash(
+                'notice',
+                'Product was saved succesfull!'
+            );
+
+            return $this->redirectToRoute('app_products');
+        }
+
+        return $this->render('/productPage/editProduct.html.twig',[
+            'form' => $form->createView(),
+            'product' => $product,
+        ]);
+    
+    }
+
+    /**
+    * @Route("/product/delete/{id}", name="product_delete")
+    */
+    public function delete(int $id): Response
+    {
+        $product = $this->getDoctrine()->getRepository(Product::class)->find($id);
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($product);
+        $entityManager->flush();
+
+        $this->addFlash(
+            'notice',
+            'Product was deleted succesfull!'
+        );
+
+        return $this->redirectToRoute('app_products');
+    }
+
 }

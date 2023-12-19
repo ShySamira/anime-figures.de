@@ -18,6 +18,15 @@
     <body>
         {% include '/main/header.html.twig' %}
         {% include '/main/navbar.html.twig' %}
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+            <div class="container" style="border: 1px solid black; background-color: #0C134F; margin-top: 2rem">
+                <div class="flash-{{ label }}">
+                    {{ message }}
+                </div>
+            </div>
+            {% endfor %}
+        {% endfor %}
         {% block body %}{% endblock %}
     </body>
 </html>

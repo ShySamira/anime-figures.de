@@ -7,6 +7,7 @@ parameters:
     paypal.base.url: '%env(PAYPAL_BASE_URL)%'
     paypal.client.id: '%env(PAYPAL_CLIENT_ID)%'
     paypal.client.secret: '%env(PAYPAL_CLIENT_SECRET)%'
+    product.picture.directory: '%kernel.project_dir%/public/pictures/products'
 
 services:
     # default configuration for services in *this* file
@@ -36,3 +37,6 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
+    App\Service\FileUploader:
+        arguments:
+            $targetDirectory: '%product.picture.directory%'
