@@ -12,10 +12,15 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-4">
-                    <img src="https://placekitten.com/400/500" class="card-img" alt="loading failed">
+                    <img src="{{ asset('pictures/products/' ~ product.pictureFilename)}}" class="card-img" alt="loading failed" style="height: 40rem; width: auto; margin-left: auto; margin-right: auto; display: block; border: solid #0C134F 1rem;">
                 </div>
                 <div class="col-8" style="position: relative;">
+                    <div style="float: right;">
+                        Category: {{product.category.label}}
+                    </div>
                     {{product.description}}
+
+
                     <div style="position: absolute; bottom: 0px; right: 1rem; border-top: solid 1px #5C469C">
                         <h1>Price: <b>{{product.price / 100}} €</b></h1>
                     </div>
@@ -27,15 +32,4 @@
         </div>
     </div>
 </section>
-
-
-
-{# <section class="d-flex container-fluid">
-    <div>
-        <img src="https://placekitten.com/400/500" class="card-img" alt="loading failed">
-    </div>
-    <div>
-        <img src="https://placekitten.com/400/500" class="card-img" alt="loading failed">
-    </div>
-</section> #}
 {% endblock %}

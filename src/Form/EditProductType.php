@@ -2,9 +2,14 @@
 
 namespace App\Form;
 
+use App\Entity\Category;
 use App\Entity\Product;
+use App\Service\Categorys;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -15,10 +20,32 @@ use Symfony\Component\Validator\Constraints\File;
 
 class EditProductType extends AbstractType
 {
+    private $entityManager;
+
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        // $categorys = $this->categorys->getChoices();
+        // $categorys = $this->entityManager->getRepository(Category::class)->findBy();
+        $categorys = $this->entityManager->getRepository(Category::class)->findAllSubcategorys();
+
         $builder
         ->add('name', TextType::class)
+        ->add('category', ChoiceType::class, [
+            'choices' => $categorys,
+            'choice_label' => 'label',
+            'group_by' => function($choice)
+            {
+                if($parent = $choice->getParentId())
+                {
+                    return $this->entityManager->getRepository(Category::class)->find($parent)->getLabel();
+                }
+            }
+        ])
         ->add('description', TextareaType::class, [
             'attr' => [
                 'style' => 'height: 6rem',

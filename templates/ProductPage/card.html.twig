@@ -6,11 +6,11 @@
 {% for product in products %}
 
 <script>
-    function confirmDelete()
+    function confirmDelete(id, name)
     {
         if (confirm('Are you sure you want to delete the product: {{ product.name }}'))
         {
-            window.location.href = "{{ '/product/delete/' ~ product.id }}";
+            // window.location.href = "{{ '/product/delete/' ~ product.id }}";
         }else
         {
             window.location.href = "https://127.0.0.1:8000/products";
@@ -40,14 +40,14 @@
     {% endif %}
     {% if product.state == 'live'%}
         <div class="col-3">
-            <div class="card product">
+            <div class="card product" style="width:450px; height: 600px;">
                 <div class="card-header" style="color:#D4ADFC;">{{ product.name }}</div>
-                <div class="card-body" style="padding: 0%">
-                    {{ '/public/pictures/products/' ~ product.pictureFilename }}
-                    <img src="{{ asset('/public/pictures/products/' ~ product.pictureFilename)}}" class="card-img" alt="loading failed">
+                <div class="card-body" style="padding: 0%; height: 50%;"> {# justify-content: center #}
+                    <img src="{{ asset('pictures/products/' ~ product.pictureFilename)}}" class="card-img" alt="loading failed" style="height: 100%; width: auto; margin-left: auto; margin-right: auto; display: block; border: solid #0C134F 1rem">
                 </div>
                 <div class="card-footer">
                     <p>{{ product.description }}</p>
+                    <p><b style="font-size: 1.5rem;">{{ product.price / 100 }} €</b></p>
                     <a href={{ '/product/details/' ~ product.slug }} class="btn btn-primary">Details</a>
                     <a href={{ '/product/add/' ~ product.id }} class="btn btn-success">Add to basket</a>
                     {% if is_granted('ROLE_ADMIN') %}
@@ -59,27 +59,27 @@
             </div>
         </div>
     {% elseif product.state == 'draft' and is_granted('ROLE_ADMIN') %}
-        <div class="col-3">
-            <div class="card product">
-                <div class="card-header" style="color:#D4ADFC;">{{ product.name }}</div>
-                <div class="card-body" style="padding: 0%">
-                    <img src="https://placekitten.com/400/500" class="card-img" alt="loading failed" style="opacity: 0.2;">
-                    <div style="position: absolute; top: 50%; left: 50%;">
-                        <h1>DRAFT</h1>
-                    </div>
-                </div>
-                <div class="card-footer">
-                    <p>{{ product.description }}</p>
-                    <a href={{ '/product/details/' ~ product.slug }} class="btn btn-primary">Details</a>
-                    <a href={{ '/product/add/' ~ product.id }} class="btn btn-success">Add to basket</a>
-                    {% if is_granted('ROLE_ADMIN') %}
-                        <a href={{ '/product/edit/' ~ product.id }} class="btn btn-warning">Edit Product</a>
-                        {# <a href={{ '/product/delete/' ~ product.id }} class="btn btn-danger" style="margin-top: 1rem;" onclick="window.confirm('Are you sure you want to delete the Product?')">DELETE PRODUCT</a> #}
-                        <button href={{ '/product/delete/' ~ product.id }} class="btn btn-danger" onclick="confirmDelete()">DELETE</button>
-                    {% endif %}
+    <div class="col-3">
+        <div class="card product" style="width:450px; height: 600px;">
+            <div class="card-header" style="color:#D4ADFC;">{{ product.name }}</div>
+            <div class="card-body" style="padding: 0%; height: 50%;"> {# justify-content: center #}
+                <img src="{{ asset('pictures/products/' ~ product.pictureFilename)}}" class="card-img" alt="loading failed" style="height: 100%; width: auto; margin-left: auto; margin-right: auto; display: block; border: solid #0C134F 1rem; opacity: 0.2">
+                <div style="position: absolute; top: 30%; left: 13.7%; font-size:7rem; transform: rotate(45deg)">
+                    DRAFT
                 </div>
             </div>
+            <div class="card-footer">
+                <p>{{ product.description }}</p>
+                <p><b style="font-size: 1.5rem;">{{ product.price / 100 }} €</b></p>
+                <a href={{ '/product/details/' ~ product.slug }} class="btn btn-primary">Details</a>
+                <a href={{ '/product/add/' ~ product.id }} class="btn btn-success">Add to basket</a>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a href={{ '/product/edit/' ~ product.id }} class="btn btn-warning">Edit Product</a>
+                    <button href={{ '/product/delete/' ~ product.id }} class="btn btn-danger" onclick="confirmDelete(product.id, product.name)">DELETE</button>
+                {% endif %}
+            </div>
         </div>
+    </div>
     {% endif %}
     {% if i % 4 == 3 %}    
     </div>

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Cart;
+use App\Entity\Categories;
 use App\Entity\Product;
 use App\Form\EditProductType;
 use App\Form\NewProductType;
@@ -85,6 +86,7 @@ class ProductController extends AbstractController
             'delete',
             'details',
             'edit',
+            'category',
         ];
 
         $form = $this->createForm(NewProductType::class);
@@ -152,11 +154,13 @@ class ProductController extends AbstractController
     */
     public function editProduct(int $id, Request $request, FileUploader $fileUploader): Response
     {
+        // $this->getDoctrine()->getRepository(Product::class)->findBy()
         $blockedSlugs = [
             'new',
             'delete',
             'details',
             'edit',
+            'category',
         ];
         $product = $this->getDoctrine()->getRepository(Product::class)->find($id);
         $form = $this->createForm(EditProductType::class, $product);
@@ -166,9 +170,6 @@ class ProductController extends AbstractController
         {
             $entityManager = $this->getDoctrine()->getManager();
             $editedProduct = $form->getData();
-            $product->setName($editedProduct->getName());
-            $product->setDescription($editedProduct->getDescription());
-            $product->setPrice($editedProduct->getPrice());
 
             $pictureFile = $form->get('picture')->getData();
             if($pictureFile)
@@ -189,15 +190,18 @@ class ProductController extends AbstractController
                     'form' => $form->createView(),
                 ]);
             }
-            if($this->getDoctrine()->getRepository(Product::class)->findOneBy(['name' => $productName])->getId() != $id)
+            if($existingProduct = $this->getDoctrine()->getRepository(Product::class)->findOneBy(['name' => $productName]))
             {
-                $this->addFlash(
-                    'error',
-                    'Could not save Product, the name already exists for a different product!'
-                );
-                return $this->render('/productPage/newProduct.html.twig',[
-                    'form' => $form->createView(),
-                ]);
+                if($existingProduct->getId() != $id)
+                {
+                    $this->addFlash(
+                        'error',
+                        'Could not save Product, the name already exists for a different product!'
+                    );
+                    return $this->render('/productPage/newProduct.html.twig',[
+                        'form' => $form->createView(),
+                    ]);
+                }
             }
             $slug = $productName;
             strtolower($slug);
@@ -241,6 +245,18 @@ class ProductController extends AbstractController
             'Product was deleted succesfull!'
         );
 
+        return $this->redirectToRoute('app_products');
+    }
+
+    /**
+    * @Route("/product/category/assign/{product_name}/{category_id}", name="product_category_assign")
+    */
+    public function addCategory(string $productName, int $categoryId): Response
+    {
+        $product = $this->getDoctrine()->getRepository(Product::class)->findOneBy(['name' => $productName]);
+        
+        $category = $this->getDoctrine()->getRepository(Categories::class)->find($categoryId);
+        
         return $this->redirectToRoute('app_products');
     }
 
