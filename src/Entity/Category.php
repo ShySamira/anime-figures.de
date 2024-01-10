@@ -25,9 +25,9 @@ class Category
     private $label;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $parentId;
+    private $parentLabel;
 
     /**
      * @ORM\Column(type="integer")
@@ -61,14 +61,14 @@ class Category
         return $this;
     }
 
-    public function getParentId(): ?int
+    public function getParentLabel(): ?string
     {
-        return $this->parentId;
+        return $this->parentLabel;
     }
 
-    public function setParentId(?int $parentId): self
+    public function setParentLabel(?string $parentLabel): self
     {
-        $this->parentId = $parentId;
+        $this->parentLabel = $parentLabel;
 
         return $this;
     }

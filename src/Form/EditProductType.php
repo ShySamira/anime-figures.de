@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -40,9 +41,9 @@ class EditProductType extends AbstractType
             'choice_label' => 'label',
             'group_by' => function($choice)
             {
-                if($parent = $choice->getParentId())
+                if($parent = $choice->getParentLabel())
                 {
-                    return $this->entityManager->getRepository(Category::class)->find($parent)->getLabel();
+                    return $parent;
                 }
             }
         ])
@@ -75,6 +76,18 @@ class EditProductType extends AbstractType
                     'mimeTypesMessage' => 'Please upload a valid Picture format (jpeg/png)',
                 ])
             ],
+        ])
+        ->add('state', CheckboxType::class, [
+            'mapped' => false,
+            'label' => 'Save as Draft?',
+            // 'data' => true,
+            'attr' => ['class' => 'custom-control custom-switch'],
+            'data' => function()
+            {
+                return false;
+            },
+            // 'false_values' => ['live'],
+            // 'value' => 'draft',
         ])
         ->add('submit', SubmitType::class, [
             'attr' => [

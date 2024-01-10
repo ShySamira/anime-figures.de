@@ -268,29 +268,42 @@ class ProductController extends AbstractController
         $category = new Category();
         $category->setLabel($data[0]);
 
+        if($data[0] == 'PARENT' || $data[1] == 'PARENT')
+        {
+            $this->addFlash(
+                'notice',
+                'The entered category label is not valid!'
+            );
+
+            return new Response('', 401);
+        }
+
         if($data[1] != null)
         {
             if($parent = $this->getDoctrine()->getRepository(Category::class)->findOneBy(['label' => $data[1]]))
             {
-                $category->setParentId($parent->getId());
+                $category->setParentLabel($parent->getLabel());
             }
             else
             {
                 $parentCategory = new Category();
                 $parentCategory->setLabel($data[1]);
-                $parentCategory->setParentId(0);
+                $parentCategory->setParentLabel('PARENT');
+
+                $category->setParentLabel($data[1]);
 
                 $entityManager->persist($parentCategory);
-                
-                $id = $parentCategory->getId();
-                $category->setParentId($parentCategory->getId());
-
-
             }
         }
 
         $entityManager->persist($category);
+
         $entityManager->flush();
+        
+        $this->addFlash(
+            'notice',
+            'The new category "'. $data[0] . '" was saved succesfull!'
+        );
 
         return new Response();
     }

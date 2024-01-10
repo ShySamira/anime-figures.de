@@ -50,8 +50,8 @@ class CategoryRepository extends ServiceEntityRepository
     public function findAllSubcategorys()
     {
         $qb = $this->createQueryBuilder('c')
-            ->where('c.parentId != 0 OR c.parentId IS NULL')
-            ->orderBy('c.parentId', 'ASC');
+            ->where("c.parentLabel != 'PARENT' OR c.parentLabel IS NULL")
+            ->orderBy('c.parentLabel', 'ASC');
 
         $querry = $qb->getQuery();
 
