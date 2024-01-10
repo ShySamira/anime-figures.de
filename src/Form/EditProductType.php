@@ -46,6 +46,13 @@ class EditProductType extends AbstractType
                 }
             }
         ])
+        ->add('newCategory', ButtonType::class, [
+            'attr' => [
+                'class' => 'btn-secondary mt-1 mb-2',
+                'onclick' => "newCategory()",
+            ],
+            'label' => 'New Category',
+        ])
         ->add('description', TextareaType::class, [
             'attr' => [
                 'style' => 'height: 6rem',

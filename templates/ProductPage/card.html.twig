@@ -6,10 +6,20 @@
 {% for product in products %}
 
 <script>
-    function confirmDelete(id, name)
+    function confirmDelete(product)
     {
-        if (confirm('Are you sure you want to delete the product: {{ product.name }}'))
+        var productName = product.dataset.name;
+        var productId = product.dataset.id;
+
+        // document.addEventListener('DOMContentLoaded', () => {
+        //     var productId = document.querySelectorAll('[data-product-id]');
+
+        //     productName = document.querySelectorAll('[data-product-name]');
+        //     console.log(productId);
+        // })
+        if (confirm('Are you sure you want to delete the product: ' + productName))
         {
+            window.location.href = '/product/delete/' + productId;
             // window.location.href = "{{ '/product/delete/' ~ product.id }}";
         }else
         {
@@ -52,8 +62,7 @@
                     <a href={{ '/product/add/' ~ product.id }} class="btn btn-success">Add to basket</a>
                     {% if is_granted('ROLE_ADMIN') %}
                         <a href={{ '/product/edit/' ~ product.id }} class="btn btn-warning">Edit Product</a>
-                        {# <a href={{ '/product/delete/' ~ product.id }} class="btn btn-danger" style="margin-top: 1rem;" onclick="window.confirm('Are you sure you want to delete the Product?')">DELETE PRODUCT</a> #}
-                        <button href={{ '/product/delete/' ~ product.id }} class="btn btn-danger" onclick="confirmDelete()">DELETE</button>
+                        <button class="btn btn-danger" onclick="confirmDelete(this)" data-id="{{product.id}}" data-name="{{product.name}}">DELETE</button>
                     {% endif %}
                 </div>
             </div>
@@ -75,7 +84,8 @@
                 <a href={{ '/product/add/' ~ product.id }} class="btn btn-success">Add to basket</a>
                 {% if is_granted('ROLE_ADMIN') %}
                     <a href={{ '/product/edit/' ~ product.id }} class="btn btn-warning">Edit Product</a>
-                    <button href={{ '/product/delete/' ~ product.id }} class="btn btn-danger" onclick="confirmDelete(product.id, product.name)">DELETE</button>
+                    <button class="btn btn-danger" onclick="confirmDelete(this)" data-id="{{product.id}}" data-name="{{product.name}}">DELETE</button>
+                    {# <button href={{ '/product/delete/' ~ product.id }} class="btn btn-danger" onclick="confirmDelete(product.id, product.name)">DELETE</button> #}
                 {% endif %}
             </div>
         </div>

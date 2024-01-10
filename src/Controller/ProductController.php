@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Cart;
 use App\Entity\Categories;
+use App\Entity\Category;
 use App\Entity\Product;
 use App\Form\EditProductType;
 use App\Form\NewProductType;
@@ -154,7 +155,6 @@ class ProductController extends AbstractController
     */
     public function editProduct(int $id, Request $request, FileUploader $fileUploader): Response
     {
-        // $this->getDoctrine()->getRepository(Product::class)->findBy()
         $blockedSlugs = [
             'new',
             'delete',
@@ -235,8 +235,16 @@ class ProductController extends AbstractController
     public function delete(int $id): Response
     {
         $product = $this->getDoctrine()->getRepository(Product::class)->find($id);
-
         $entityManager = $this->getDoctrine()->getManager();
+        if($carts = $this->getDoctrine()->getRepository(Cart::class)->findBy(['product' => $product]))
+        {
+            foreach($carts as $cart)
+            {
+                $entityManager->remove($cart);
+            }
+
+        }
+
         $entityManager->remove($product);
         $entityManager->flush();
 
@@ -249,15 +257,43 @@ class ProductController extends AbstractController
     }
 
     /**
-    * @Route("/product/category/assign/{product_name}/{category_id}", name="product_category_assign")
+    * @Route("/product/category/new", name="product_category_new")
     */
-    public function addCategory(string $productName, int $categoryId): Response
-    {
-        $product = $this->getDoctrine()->getRepository(Product::class)->findOneBy(['name' => $productName]);
-        
-        $category = $this->getDoctrine()->getRepository(Categories::class)->find($categoryId);
-        
-        return $this->redirectToRoute('app_products');
+    public function newCategory(Request $request): Response
+    {   
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $data = explode(',', $request->getContent());
+
+        $category = new Category();
+        $category->setLabel($data[0]);
+
+        if($data[1] != null)
+        {
+            if($parent = $this->getDoctrine()->getRepository(Category::class)->findOneBy(['label' => $data[1]]))
+            {
+                $category->setParentId($parent->getId());
+            }
+            else
+            {
+                $parentCategory = new Category();
+                $parentCategory->setLabel($data[1]);
+                $parentCategory->setParentId(0);
+
+                $entityManager->persist($parentCategory);
+                
+                $id = $parentCategory->getId();
+                $category->setParentId($parentCategory->getId());
+
+
+            }
+        }
+
+        $entityManager->persist($category);
+        $entityManager->flush();
+
+        return new Response();
     }
+
 
 }
