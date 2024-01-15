@@ -57,7 +57,8 @@ class Invoice
         $invoice->setInvoiceNumber($invoiceNumber)
             ->setDeliveryAddress($address)
             ->setInvoiceDate(new \DateTimeImmutable())
-            ->setDeliveryDate($deliveryDate);
+            ->setDeliveryDate($deliveryDate)
+            ->setStatus('payed');
 
         $this->entityManager->persist($invoice);
         $this->entityManager->flush();
@@ -101,8 +102,10 @@ class Invoice
             $products[] = $invocieProduct;
 
             $this->entityManager->persist($invocieProduct);
-            $this->entityManager->flush();
+            $this->entityManager->remove($position);
         }
+
+        $this->entityManager->flush();
 
         return $products;
     }

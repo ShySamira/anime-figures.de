@@ -45,6 +45,11 @@ class Invoice
      */
     private $delivery_date;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $status;
+
     public function __construct()
     {
         $this->products = new ArrayCollection();
@@ -123,6 +128,18 @@ class Invoice
     public function setDeliveryDate(\DateTimeImmutable $delivery_date): self
     {
         $this->delivery_date = $delivery_date;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }

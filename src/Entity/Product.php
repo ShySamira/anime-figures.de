@@ -40,9 +40,9 @@ class Product
     private $slug;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="boolean")
      */
-    private $state;
+    private $draft;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -107,14 +107,14 @@ class Product
         return $this;
     }
 
-    public function getState(): ?string
+    public function isdraft(): ?bool
     {
-        return $this->state;
+        return $this->draft;
     }
 
-    public function setState(string $state): self
+    public function setdraft(bool $draft): self
     {
-        $this->state = $state;
+        $this->draft = $draft;
 
         return $this;
     }

@@ -23,11 +23,16 @@
             console.log(category);
             xhttp.send(category);
             location.reload();
-
         }
     }
 
-
+    function changeToDraft(checkbox)
+    {
+        if(checkbox.checked)
+        {
+            alert('If you change from live to draft, any cart position containing this product will be deleted!');
+        }
+    }
 </script>
 
 

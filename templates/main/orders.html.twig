@@ -1,0 +1,29 @@
+{% extends '/main/base.html.twig' %}
+
+{% block title %}Homepage{% endblock %}
+
+{% block body %}
+
+<div class="title">
+    <b><h1>Orders</h1></b>
+</div>
+
+<table>
+    <tr>
+        <th>Number</th>
+        <th>Invoice Date</th>
+        <th>Delivery Date</th>
+        <th>Status</th>
+    </tr>
+    {% for invoice in invoices %}
+    <tr>
+        <td>{{ invoice.invoiceNumber}}</td>
+        <td>{{ invoice.invoiceDate|date('Y-m-d') }}</td>
+        <td>{{ invoice.deliveryDate|date('Y-m-d') }}</td>
+        <td>{{ invoice.status}}</td>
+
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

@@ -77,18 +77,14 @@ class EditProductType extends AbstractType
                 ])
             ],
         ])
-        ->add('state', CheckboxType::class, [
-            'mapped' => false,
+        ->add('draft', CheckboxType::class, [
             'label' => 'Save as Draft?',
-            // 'data' => true,
-            'attr' => ['class' => 'custom-control custom-switch'],
-            'data' => function()
-            {
-                return false;
-            },
-            // 'false_values' => ['live'],
-            // 'value' => 'draft',
+            'attr' => [
+                'onClick' => 'changeToDraft(this)'
+            ],
+            'required' => false,
         ])
+
         ->add('submit', SubmitType::class, [
             'attr' => [
                 'class' => 'btn-success mt-4 float-start',

@@ -15,6 +15,12 @@ body{
     background-color: #1D267D;
 }
 
+.title{
+    color: #D4ADFC;
+    font-size: 3rem;
+    
+}
+
 .navigation{
     background-color: #0C134F;
     
@@ -46,3 +52,19 @@ body{
     height: 300px;
     width: auto;
 }
+
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #0C134F;
+  }

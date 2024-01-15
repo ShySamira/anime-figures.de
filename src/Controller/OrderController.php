@@ -127,9 +127,6 @@ class OrderController extends AbstractController
             $identifier = session_id();
         }
 
-        $entityManager = $this->getDoctrine()->getManager();
-
-
         $shipmentId = $this->session->get('shipping_id');
         $shipmentAddress = $this->getDoctrine()->getRepository(ShipmentAddress::class)->find($shipmentId);
 

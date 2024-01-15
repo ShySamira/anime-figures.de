@@ -101,10 +101,10 @@ class ProductController extends AbstractController
 
             if($form->get('submitDraft')->isClicked())
             {
-                $product->setState('draft');
+                $product->setDraft(true);
             }else
             {
-                $product->setState('live');
+                $product->setDraft(false);
             }
 
             if(in_array($productName, $blockedSlugs))
@@ -169,7 +169,7 @@ class ProductController extends AbstractController
         if($form->isSubmitted() && $form->isValid())
         {
             $entityManager = $this->getDoctrine()->getManager();
-            $editedProduct = $form->getData();
+            $product = $form->getData();
 
             $pictureFile = $form->get('picture')->getData();
             if($pictureFile)
@@ -178,7 +178,7 @@ class ProductController extends AbstractController
                 $product->setPictureFilename($pictureFilename);
             }
             
-            $productName = $editedProduct->getName();
+            $productName = $product->getName();
 
             if(in_array($productName, $blockedSlugs))
             {
@@ -190,6 +190,7 @@ class ProductController extends AbstractController
                     'form' => $form->createView(),
                 ]);
             }
+
             if($existingProduct = $this->getDoctrine()->getRepository(Product::class)->findOneBy(['name' => $productName]))
             {
                 if($existingProduct->getId() != $id)
@@ -208,10 +209,23 @@ class ProductController extends AbstractController
             str_replace(' ', '-', $slug);
             str_replace('.', '_', $slug);
 
-            $editedProduct->setSlug($slug);
+            $product->setSlug($slug);
 
             
-            $entityManager->persist($editedProduct);
+            $entityManager->persist($product);
+            
+
+            if(
+            $product->isDraft() == true && 
+            $carts = $this->getDoctrine()->getRepository(Cart::class)->findBy(['product' => $product])
+            )
+            {
+                foreach($carts as $cart)
+                {
+                    $entityManager->remove($cart);
+                }
+            }
+
             $entityManager->flush();
 
             $this->addFlash(

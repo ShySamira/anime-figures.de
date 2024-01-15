@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Invoice;
 use App\Entity\Product;
 use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,6 +32,28 @@ class MainController extends AbstractController
         
         return $this->render('/ProductPage/products.html.twig', [
             'products' => $products,
+        ]);
+    }
+
+    /**
+    * @Route("/dashboard", name="app_dashboard")
+    */
+    public function dasboard(): Response
+    {
+        
+
+        return $this->render('/main/dashboard.html.twig');
+    }
+
+    /**
+    * @Route("/orders", name="app_orders")
+    */
+    public function orders(): Response
+    {
+        $invoices = $this->getDoctrine()->getRepository(Invoice::class)->findAll();
+
+        return $this->render('/main/orders.html.twig', [
+            'invoices' => $invoices
         ]);
     }
 }

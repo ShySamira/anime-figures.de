@@ -48,7 +48,7 @@
         </div>
     {% set i = i + 1 %}
     {% endif %}
-    {% if product.state == 'live'%}
+    {% if product.draft == false %}
         <div class="col-3">
             <div class="card product" style="width:450px; height: 600px;">
                 <div class="card-header" style="color:#D4ADFC;">{{ product.name }}</div>
@@ -67,7 +67,7 @@
                 </div>
             </div>
         </div>
-    {% elseif product.state == 'draft' and is_granted('ROLE_ADMIN') %}
+    {% elseif product.draft == true and is_granted('ROLE_ADMIN') %}
     <div class="col-3">
         <div class="card product" style="width:450px; height: 600px;">
             <div class="card-header" style="color:#D4ADFC;">{{ product.name }}</div>
