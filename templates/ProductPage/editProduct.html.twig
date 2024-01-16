@@ -3,7 +3,7 @@
 {% block title %}Shipment{% endblock %}
 
 {% block body %}
-
+{% if is_granted('ROLE_ADMIN') %}
 <script>
     function newCategory()
     {
@@ -47,5 +47,5 @@
         </div>
 
     </div>
-    
+{% endif %}
 {% endblock %}

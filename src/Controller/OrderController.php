@@ -7,6 +7,7 @@ use App\Entity\ShipmentAddress;
 use App\Form\ShipmentAddressType;
 use App\Service\Invoice as ServiceInvoice;
 use App\Service\PayPal;
+use App\Service\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -22,11 +23,13 @@ class OrderController extends AbstractController
 {
     private $serializer;
     private $session;
+    private $user;
 
-    public function __construct(EncoderInterface $encoder, NormalizerInterface $normalizer, SessionInterface $session)
+    public function __construct(EncoderInterface $encoder, NormalizerInterface $normalizer, SessionInterface $session, User $user)
     {
         $this->serializer = new Serializer([$normalizer], [$encoder]);
         $this->session = $session;
+        $this->user = $user;
     }
 
     /**
@@ -34,13 +37,7 @@ class OrderController extends AbstractController
      */
     public function basket(): Response
     {
-        if($user = $this->getUser()){
-            $identifier = $user->getUuid();
-        }else{
-            // $session = $this->get("session");
-            // $session->set('activated', true);
-            $identifier = session_id();
-        }
+        $identifier = $this->user->getIdentifier();
 
         $products = [];
         $cartPositions = $this->getDoctrine()->getRepository(Cart::class)->findAllWithProducts($identifier);
@@ -121,11 +118,7 @@ class OrderController extends AbstractController
     */
     public function getInvoice(ServiceInvoice $invoiceService): Response
     {
-        if($user = $this->getUser()){
-            $identifier = $user->getUuid();
-        }else{
-            $identifier = session_id();
-        }
+        $identifier = $this->user->getIdentifier();
 
         $shipmentId = $this->session->get('shipping_id');
         $shipmentAddress = $this->getDoctrine()->getRepository(ShipmentAddress::class)->find($shipmentId);

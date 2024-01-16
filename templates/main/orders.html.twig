@@ -3,27 +3,135 @@
 {% block title %}Homepage{% endblock %}
 
 {% block body %}
+{% if is_granted('ROLE_ADMIN') %}
+<script>
+function sortTable(columnNumber, dataType)
+{
+    var sortCase = 
+    {
+        number: function()
+        {
+            var xNumber = Number(x.innerHTML.slice(2));
+            var yNumber = Number(y.innerHTML.slice(2));
+
+            if(direction == 'asc'){
+                if(xNumber > yNumber){
+                return true;
+            }
+            }else if(direction == 'desc'){
+                if(xNumber < yNumber){
+                return true;
+            }
+            }
+
+        },
+        string: function()
+        {
+            if(direction == 'asc'){
+                if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) 
+                {
+                    return true;
+                }
+            }else if(direction == 'desc'){
+                if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) 
+                {
+                    return true;
+                }
+            }
+        },
+        date: function()
+        {
+            var arrayDate, year, month, day, xDate, yDate;
+
+            arrayDate = x.innerHTML.split('-');
+            xDate = new Date(arrayDate[2], arrayDate[1], arrayDate[0]);
+
+            arrayDate = y.innerHTML.split('-');
+            yDate = new Date(arrayDate[2], arrayDate[1], arrayDate[0]);
+
+            if(direction == 'asc'){
+                if(xDate.getTime() > yDate.getTime())
+                {
+                    return true;
+                }
+            }else if(direction == 'desc'){
+                if(xDate.getTime() < yDate.getTime())
+                {
+                    return true;
+                }
+            }
+        },
+    }
+
+    var table, rows, direction, switching, shouldSwitch, switchCount, x, y;
+    switchCount = 0;
+
+    direction = 'asc';
+
+    table = document.getElementById("table");
+    rows = table.rows;
+    switching = true;
+
+    while(switching)
+    {
+        switching = false;
+
+        for(i = 1; i < (rows.length - 1); i++)
+        {
+            shouldSwitch = false;
+
+            x = rows[i].getElementsByTagName("TD")[columnNumber];
+            y = rows[i + 1].getElementsByTagName("TD")[columnNumber];
+
+            shouldSwitch = sortCase[dataType]();
+            console.log(direction);
+            if(shouldSwitch)
+            {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+                switchCount ++;
+
+                break;
+            }
+            else if (switchCount == 0 && direction == "asc") 
+            {
+                    direction = "desc";
+                    switching = true;
+            }
+            else if (switchCount == 0 && direction == "desc") 
+            {
+                    direction = "asc";
+                    switching = true;
+            }
+        }
+    }
+}
+</script>
 
 <div class="title">
     <b><h1>Orders</h1></b>
 </div>
 
-<table>
-    <tr>
-        <th>Number</th>
-        <th>Invoice Date</th>
-        <th>Delivery Date</th>
-        <th>Status</th>
-    </tr>
-    {% for invoice in invoices %}
-    <tr>
-        <td>{{ invoice.invoiceNumber}}</td>
-        <td>{{ invoice.invoiceDate|date('Y-m-d') }}</td>
-        <td>{{ invoice.deliveryDate|date('Y-m-d') }}</td>
-        <td>{{ invoice.status}}</td>
+<div class="orders-table">
+    <table id="table">
+        <tr>
+            <th onclick="sortTable(0, 'number')">Number</th>
+            <th onclick="sortTable(1, 'date')">Invoice Date</th>
+            <th onclick="sortTable(2, 'date')">Delivery Date</th>
+            <th onclick="sortTable(3, 'string')">Status</th>
+            <th onclick="sortTable(3, 'string')">Action</th>
+        </tr>
+        {% for invoice in invoices %}
+        <tr>
+            <td>{{ invoice.invoiceNumber}}</td>
+            <td>{{ invoice.invoiceDate|date('d-m-Y') }}</td>
+            <td>{{ invoice.deliveryDate|date('d-m-Y') }}</td>
+            <td>{{ invoice.status}}</td> 
+            <td><a href="{{ '/order/details/' ~ invoice.InvoiceNumber }}" class="btn btn-success">Details</a></td>  
+        </tr>
+        {% endfor %}
+    </table>
+</div>
 
-    </tr>
-    {% endfor %}
-</table>
-
+{% endif %}
 {% endblock %}

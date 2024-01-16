@@ -40,7 +40,7 @@ class MainController extends AbstractController
     */
     public function dasboard(): Response
     {
-        
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         return $this->render('/main/dashboard.html.twig');
     }
@@ -50,10 +50,28 @@ class MainController extends AbstractController
     */
     public function orders(): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $invoices = $this->getDoctrine()->getRepository(Invoice::class)->findAll();
 
         return $this->render('/main/orders.html.twig', [
             'invoices' => $invoices
         ]);
     }
+
+    /**
+    * @Route("/order/details/{ivNumber}", name="app_order_details")
+    */
+    public function orderDetails($ivNumber): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $invoice = $this->getDoctrine()->getRepository(Invoice::class)->findOneBy(['invoice_number' => $ivNumber]);
+        $products = $invoice->getProducts();
+        return $this->render('/main/orderDetails.html.twig', [
+            'invoice' => $invoice,
+            'products' => $products,
+        ]);
+    }
 }
+

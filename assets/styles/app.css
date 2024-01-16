@@ -21,6 +21,11 @@ body{
     
 }
 
+.orders-table
+{
+    width: 80%;
+}
+
 .navigation{
     background-color: #0C134F;
     
@@ -67,4 +72,11 @@ table {
   
   tr:nth-child(even) {
     background-color: #0C134F;
+  }
+
+  .order-details-info
+  {
+    border: solid 2px #0C134F;
+    width: 30%;
+    margin-bottom: 2rem;
   }

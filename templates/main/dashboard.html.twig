@@ -3,6 +3,7 @@
 {% block title %}Homepage{% endblock %}
 
 {% block body %}
-
+{% if is_granted('ROLE_ADMIN') %}
 Dashboard tbd
+{% endif %}
 {% endblock %}

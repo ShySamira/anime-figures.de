@@ -34,17 +34,7 @@ class Invoice
 
     public function create(array $products, ShipmentAddress $address)
     {
-        if($user = $this->security->getUser()){
-            $identifier = $user->getUuid();
-        }else{
-            $identifier = session_id();
-        }
-
-        $id = $this->session->get('shipping_id');
-
-        $deliveryDate = new \DateTime();
-        $deliveryDate->modify('+5 day');
-        $deliveryDate = \DateTimeImmutable::createFromMutable($deliveryDate);
+        $deliveryDate = new \DateTimeImmutable('+5 day');
 
         $invoice = new EntityInvoice();
 
@@ -92,9 +82,10 @@ class Invoice
     {
         $products = [];
         foreach($cartPositions as $position){
+            $invocieProduct = new InvoiceProduct();
+            
             $netPrice = $position->getProduct()->getPrice() * 100 / 119;
 
-            $invocieProduct = new InvoiceProduct();
             $invocieProduct->setName($position->getProduct()->getName())
             ->setNetPrice($netPrice)
             ->setAmount($position->getAmount());

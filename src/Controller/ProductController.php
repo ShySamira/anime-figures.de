@@ -9,6 +9,7 @@ use App\Entity\Product;
 use App\Form\EditProductType;
 use App\Form\NewProductType;
 use App\Service\FileUploader;
+use App\Service\User;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,12 +18,13 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ProductController extends AbstractController
 {   
-
     private $logger;
+    private $user;
 
-    public function __construct(LoggerInterface $logger)
+    public function __construct(LoggerInterface $logger, User $user)
     {
         $this->logger = $logger;
+        $this->user = $user;
     }
     /**
     * @Route("/product/details/{productSlug}", name="details")
@@ -34,6 +36,7 @@ class ProductController extends AbstractController
 
         if(!$product){
             $this->logger->error('Could not find details for product', ['slug' => $productSlug]);
+            throw $this->createNotFoundException('The product does not exist');
             return $this->redirectToRoute('app_home');
         }
         return $this->render('ProductPage/details.html.twig', [
@@ -47,18 +50,15 @@ class ProductController extends AbstractController
     public function addProduct(int $id): Response
     {
         $this->logger->info('addProduct site was called', ['slug' => $id]);
-        if($user = $this->getUser()){
-            $identifier = $user->getUuid();
-        }else{
-            $identifier = session_id();
-        }
-        
+
+        $identifier = $this->user->getIdentifier();
+
         $product = $this->getDoctrine()->getRepository(Product::class)->find($id);
 
         if($cart = $this->getDoctrine()->getRepository(Cart::class)->findOneBy([
             'product' => $product, 
-            'user' => $identifier])){
-            
+            'user' => $identifier]))
+        {    
             $cart->increaseAmountByOne();
         }else{
             $cart = new Cart();
@@ -74,6 +74,7 @@ class ProductController extends AbstractController
         $this->logger->info('product was added to basket', [
             'product' => $product->getName(),
             'user' => $identifier]);
+
         return $this->redirectToRoute('app_products');
     }
 
@@ -82,6 +83,8 @@ class ProductController extends AbstractController
     */
     public function newProduct(Request $request): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $blockedSlugs = [
             'new',
             'delete',
@@ -95,7 +98,6 @@ class ProductController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid())
         {
-            $entityManager = $this->getDoctrine()->getManager();
             $product = $form->getData();
             $productName = $product->getName();
 
@@ -134,6 +136,7 @@ class ProductController extends AbstractController
 
             $product->setSlug($slug);
             
+            $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($product);
             $entityManager->flush();
 
@@ -155,6 +158,8 @@ class ProductController extends AbstractController
     */
     public function editProduct(int $id, Request $request, FileUploader $fileUploader): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $blockedSlugs = [
             'new',
             'delete',
@@ -248,6 +253,8 @@ class ProductController extends AbstractController
     */
     public function delete(int $id): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $product = $this->getDoctrine()->getRepository(Product::class)->find($id);
         $entityManager = $this->getDoctrine()->getManager();
         if($carts = $this->getDoctrine()->getRepository(Cart::class)->findBy(['product' => $product]))
@@ -275,6 +282,8 @@ class ProductController extends AbstractController
     */
     public function newCategory(Request $request): Response
     {   
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        
         $entityManager = $this->getDoctrine()->getManager();
 
         $data = explode(',', $request->getContent());
