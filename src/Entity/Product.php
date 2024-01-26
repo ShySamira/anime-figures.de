@@ -54,6 +54,11 @@ class Product
      */
     private $category;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $position;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -139,6 +144,18 @@ class Product
     public function setCategory(?Category $category): self
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    public function getPosition(): ?int
+    {
+        return $this->position;
+    }
+
+    public function setPosition(int $position): self
+    {
+        $this->position = $position;
 
         return $this;
     }

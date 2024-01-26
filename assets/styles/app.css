@@ -21,11 +21,6 @@ body{
     
 }
 
-.orders-table
-{
-    width: 80%;
-}
-
 .navigation{
     background-color: #0C134F;
     
@@ -58,25 +53,43 @@ body{
     width: auto;
 }
 
-table {
+.orders-table
+{
+    width: 80%;
+    margin-left: 2rem;
+}
+
+.table-color table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
     width: 100%;
   }
   
-  td, th {
+.table-color td, th {
     border: 1px solid #dddddd;
     text-align: left;
     padding: 8px;
   }
   
-  tr:nth-child(even) {
+.table-color tr:nth-child(even) {
     background-color: #0C134F;
-  }
+}
 
-  .order-details-info
-  {
-    border: solid 2px #0C134F;
-    width: 30%;
-    margin-bottom: 2rem;
-  }
+.table-blank td, .table-blank th
+{
+    border: hidden;
+}
+.order-details
+{
+    float: left;
+}
+
+.status-dropdown
+{
+    background-color: #0C134F;
+}
+
+.hide
+{
+    display: none;
+}

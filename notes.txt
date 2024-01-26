@@ -9,6 +9,7 @@ ToDo:
 -show pdf
 -set NetPrice in Invoice Entity
 -create invoice service and implement at paymentmethod
+-new categories cant be saved without parent
 
 Cart Entity:
 
@@ -45,4 +46,10 @@ invoice[
 ]
 
 
+1. draggable gets dragged
+2. On drag enter -> if draggable > drop target => for each target with lesser position than draggable: append child to column with id = position + 1
+                    if draggable < drop target => for each target with lesser position than drop target: append child to column with id = position - 1
+3. OnDrop -> draggable appends to hovered column -> save position = column number -> reload
 
+
+last: prompt obens: confirm -> all items get position = column number

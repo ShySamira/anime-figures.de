@@ -11,16 +11,68 @@
     <b><h1>Order Details</h1></b>
 </div>
 
-<div class="container">
-    <div class="order-details-info">
-        Invoice Date: {{ invoice.invoiceDate|date('d.m.Y') }}<br>
-        Delivery Date: {{ invoice.deliveryDate|date('d.m.Y') }}<br>
-        Invoice Number: {{ invoice.invoiceNumber }}
-        <hr>
-        Status: {{ invoice.status }}
-    </div>
+<div class="container-fluid">
+    <table class="order-details table-blank col-3">
+        <tbody>
+            <tr>
+                <th><h3>Info</h3></th>
+            </tr>
+            <tr>
+                <th>Invoice Status:</th>
+                <td>{{ invoice.status }}</td>
+            </tr>
+            <tr>
+                <th>Invoice Date:</th>
+                <td>{{ invoice.invoiceDate|date('d.m.Y') }}</td>
+            </tr>
+            <tr>
+                <th>Delivery Date:</th>
+                <td>{{ invoice.deliveryDate|date('d.m.Y') }}</td>
+            </tr>
+            <tr>
+                <th>Customer:</th>
+                <td>TO DO</td>
+            </tr>
+            <tr>
+                <th>Customer Number:</th>
+                <td>{{ user.uuid }}</td>
+            </tr>
+            <tr>
+                <th>Customer Email</th>
+                <td>{{ user.email }}</td>
+            </tr>
+            <tr>
+                <th>Invoice Number:</th>
+                <td>{{ invoice.invoiceNumber }}</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <table class="order-details table-blank col-3">
+        <tbody>
+            <tr>
+                <th><h3>Delivery Address</h3></th>
+            </tr>
+            <tr>
+                <th>Recipient:</th>
+                <td>{{ address.firstname }} {{ address.lastname }}</td>
+            </tr>
+            <tr>
+                <th>Street and Number: </th>
+                <td>{{ address.street }}</td>
+            </tr>
+            <tr>
+                <th>Zip and City:</th>
+                <td>{{ address.zipCode }} {{ address.city }}</td>
+            </tr>
+            <tr>
+                <th>Country:</th>
+                <td>{{ address.country }}</td>
+            </tr>
+        </tbody>
+    </table>
 
-    <div>
+    <span class="table-color">
         <table>
             <tr>
                 <th>Pos.</th>
@@ -58,9 +110,8 @@
                 <hr>
                 <b>Subtotal</b>
             </div>
-
         </div>
-    </div>
-
+    </span>
+</div>
 {% endif %}
 {% endblock %}

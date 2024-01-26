@@ -135,7 +135,11 @@ class ProductController extends AbstractController
             str_replace('.', '_', $slug);
 
             $product->setSlug($slug);
-            
+            $product->setPosition('0');
+
+            $highestPosition = $this->getDoctrine()->getRepository(Product::class)->getHighestPosition();
+            $product->setPosition($highestPosition + 1);
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($product);
             $entityManager->flush();

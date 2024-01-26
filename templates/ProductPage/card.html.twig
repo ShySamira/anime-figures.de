@@ -1,34 +1,121 @@
-
-
-{% set i = 0 %}
-{% set isAdminAndHasAddCardSet = is_granted('ROLE_ADMIN') %}
-
-{% for product in products %}
-
 <script>
     function confirmDelete(product)
     {
         var productName = product.dataset.name;
         var productId = product.dataset.id;
 
-        // document.addEventListener('DOMContentLoaded', () => {
-        //     var productId = document.querySelectorAll('[data-product-id]');
-
-        //     productName = document.querySelectorAll('[data-product-name]');
-        //     console.log(productId);
-        // })
         if (confirm('Are you sure you want to delete the product: ' + productName))
         {
             window.location.href = '/product/delete/' + productId;
-            // window.location.href = "{{ '/product/delete/' ~ product.id }}";
         }else
         {
             window.location.href = "https://127.0.0.1:8000/products";
         }
     }
+
+    function allowDrop(event)
+    {
+        event.preventDefault();
+    }
+
+    function drag(event)
+    {
+
+    }
+
+    function dragEnd(event)
+    {
+
+    }
+
+    function dragStart(event)
+    {
+        event.dataTransfer.setData('text/plain', event.target.id);
+        setTimeout(() => {
+            event.target.classList.add('hide');
+        }, 0);
+    }
+    function dragEnter(event)
+    {
+        event.preventDefault();
+        let swapChild;
+        let targetColumn;
+        let i = 0;
+        let dragId = event.dataTransfer.getData('text/plain');
+        let dragIdNumber = dragId.split('-')[1];
+        let dropId = event.target.id;
+        let dropIdNumber = dropId.split('-')[1];
+
+        // console.log('enter');
+        // console.log('drag: ' + dragId);
+        // console.log('drop: ' + dropId);
+
+        // console.log('dragNumber = ' + dragIdNumber);
+        // console.log('dropNumber = ' + dropIdNumber);
+        // console.log(event.target.id);
+        if(dragIdNumber > dropIdNumber)
+        {
+            for(let i = dragIdNumber; i > dropIdNumber; i--)
+            {
+                // console.log(i);
+                // console.log('1.' + document.getElementById('colId-' + i).id)
+                // console.log('2.' + document.getElementById('dragId-' + i).id)
+                swapChild = document.getElementById('dragId-' + (i - 1));
+                targetColumn = document.getElementById('colId-' + i);
+                targetColumn.appendChild(swapChild);
+                swapChild.id = 'dragId-' + i;
+            }
+        }else if(dragIdNumber < dropIdNumber)
+        {
+            console.log('first If');
+            for(i = dragIdNumber; i < dropIdNumber; i++)
+            {
+                // console.log(i);
+                // console.log('1.' + document.getElementById('colId-' + i).id)
+                // console.log('2.' + document.getElementById('dragId-' + i).id)
+                document.getElementById('colId-' + i).appendChild(document.getElementById('dragId-' + (Number(i) + 1)));
+            }
+        }
+    }
+
+    function dragLeave(event)
+    {
+        // console.log('leave');
+        event.preventDefault();
+        var dragId = event.dataTransfer.getData('text/plain');
+        var dragIdNumber = dragId.split('-')[1];
+        var dropId = event.target.id;
+        var dropIdNumber = dropId.split('-')[1];
+
+
+    }
+
+    function drop(event)
+    {
+        var dragId = event.dataTransfer.getData('text/plain');
+        var dragIdNumber = dragId.split('-')[1];
+        let dropId = event.target.id;
+        let dropIdNumber = dropId.split('-')[1];
+
+        let dragItem = document.getElementById(dragId);
+        setTimeout(() => {
+            dragItem.classList.remove('hide');
+        }, 0);
+        event.target.appendChild(dragItem);
+        dragItem.id = 'dragId-' + dropIdNumber;
+
+    }
 </script>
 
-    {% if i % 4 == 0 %}
+{% set i = 0 %}
+{# {% set colNumber = 0 %} #}
+{% set rowFull = true %}
+{% set isAdminAndHasAddCardSet = is_granted('ROLE_ADMIN') %}
+
+{% for product in products %}
+    {# {% if i % 4 == 0 %} #}
+    {% if i == 0 and rowFull == true %}
+        {% set rowFull = false %}
     <div class="row gx-5 mt-5">
     {% endif %}
     
@@ -49,8 +136,8 @@
     {% set i = i + 1 %}
     {% endif %}
     {% if product.draft == false %}
-        <div class="col-3">
-            <div class="card product" style="width:450px; height: 600px;">
+        <div class="col-3" id="{{ 'colId-' ~ product.position }}" ondragenter="dragEnter(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="drop(event)" style="z-index: 10;">
+            <div class="card product" style="width:450px; height: 600px;" id="{{ 'dragId-'  ~ product.position }}" draggable="true" ondragstart="dragStart(event)" ondrag="drag(event)" ondragend="dragEnd(event)">
                 <div class="card-header" style="color:#D4ADFC;">{{ product.name }}</div>
                 <div class="card-body" style="padding: 0%; height: 50%;"> {# justify-content: center #}
                     <img src="{{ asset('pictures/products/' ~ product.pictureFilename)}}" class="card-img" alt="loading failed" style="height: 100%; width: auto; margin-left: auto; margin-right: auto; display: block; border: solid #0C134F 1rem">
@@ -67,34 +154,39 @@
                 </div>
             </div>
         </div>
+    {% set i = i + 1 %}
     {% elseif product.draft == true and is_granted('ROLE_ADMIN') %}
-    <div class="col-3">
-        <div class="card product" style="width:450px; height: 600px;">
-            <div class="card-header" style="color:#D4ADFC;">{{ product.name }}</div>
-            <div class="card-body" style="padding: 0%; height: 50%;"> {# justify-content: center #}
-                <img src="{{ asset('pictures/products/' ~ product.pictureFilename)}}" class="card-img" alt="loading failed" style="height: 100%; width: auto; margin-left: auto; margin-right: auto; display: block; border: solid #0C134F 1rem; opacity: 0.2">
-                <div style="position: absolute; top: 30%; left: 13.7%; font-size:7rem; transform: rotate(45deg)">
-                    DRAFT
+        <div class="col-3" id="{{ 'colId-' ~ product.position }}" ondragenter="dragEnter(event)"  ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="drop(event)">
+            <div class="card product" style="width:450px; height: 600px;" id="{{ 'dragId-'  ~ product.position }}" draggable="true" ondragstart="dragStart(event)" ondrag="drag(event)" ondragend="dragEnd(event)">
+                <div class="card-header" style="color:#D4ADFC;">{{ product.name }}</div>
+                <div class="card-body" style="padding: 0%; height: 50%;"> {# justify-content: center #}
+                    <img src="{{ asset('pictures/products/' ~ product.pictureFilename)}}" class="card-img" alt="loading failed" style="height: 100%; width: auto; margin-left: auto; margin-right: auto; display: block; border: solid #0C134F 1rem; opacity: 0.2">
+                    <div style="position: absolute; top: 30%; left: 13.7%; font-size:7rem; transform: rotate(45deg)">
+                        DRAFT
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <p>{{ product.description }}</p>
+                    <p><b style="font-size: 1.5rem;">{{ product.price / 100 }} €</b></p>
+                    <a href={{ '/product/details/' ~ product.slug }} class="btn btn-primary">Details</a>
+                    <a href={{ '/product/add/' ~ product.id }} class="btn btn-success">Add to basket</a>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a href={{ '/product/edit/' ~ product.id }} class="btn btn-warning">Edit Product</a>
+                        <button class="btn btn-danger" onclick="confirmDelete(this)" data-id="{{product.id}}" data-name="{{product.name}}">DELETE</button>
+                        {# <button href={{ '/product/delete/' ~ product.id }} class="btn btn-danger" onclick="confirmDelete(product.id, product.name)">DELETE</button> #}
+                    {% endif %}
                 </div>
             </div>
-            <div class="card-footer">
-                <p>{{ product.description }}</p>
-                <p><b style="font-size: 1.5rem;">{{ product.price / 100 }} €</b></p>
-                <a href={{ '/product/details/' ~ product.slug }} class="btn btn-primary">Details</a>
-                <a href={{ '/product/add/' ~ product.id }} class="btn btn-success">Add to basket</a>
-                {% if is_granted('ROLE_ADMIN') %}
-                    <a href={{ '/product/edit/' ~ product.id }} class="btn btn-warning">Edit Product</a>
-                    <button class="btn btn-danger" onclick="confirmDelete(this)" data-id="{{product.id}}" data-name="{{product.name}}">DELETE</button>
-                    {# <button href={{ '/product/delete/' ~ product.id }} class="btn btn-danger" onclick="confirmDelete(product.id, product.name)">DELETE</button> #}
-                {% endif %}
-            </div>
         </div>
-    </div>
+    {% set i = i + 1 %}
     {% endif %}
-    {% if i % 4 == 3 %}    
+    {# {% if i % 5 == 4 %}     #}
+    {% if i == 4 %}
+        {% set rowFull = true %}
+        {% set i = 0 %}   
     </div>
     {% endif %}
 
-    {% set i = i + 1 %}
+    {# {% set i = i + 1 %} #}
     
 {% endfor %}

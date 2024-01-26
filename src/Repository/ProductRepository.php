@@ -46,6 +46,27 @@ class ProductRepository extends ServiceEntityRepository
             $this->_em->flush();
         }
     }
+    
+    public function findAllSortedByPosition()
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->orderBy('p.position', 'ASC');
+
+        $querry = $qb->getQuery();
+
+        return $querry->execute();
+    }
+
+        
+    public function getHighestPosition()
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->select('MAX(p.position)');
+
+        $querry = $qb->getQuery();
+
+        return $querry->execute()[0][1];
+    }
 
     // /**
     //  * @return Product[] Returns an array of Product objects

@@ -106,13 +106,25 @@ function sortTable(columnNumber, dataType)
         }
     }
 }
+
+function saveStatus(option)
+{
+    const invoice = [];
+    invoice[0] = option.parentNode.id;
+    invoice[1] = option.value;
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.open("POST", "/orders", true);
+    xhttp.send(invoice);
+}
 </script>
 
+{% set orderStatuses = ['payed', 'canceled', 'shipped', 'delivered'] %}
 <div class="title">
     <b><h1>Orders</h1></b>
 </div>
 
-<div class="orders-table">
+<div class="table-color col-10 mx-5">
     <table id="table">
         <tr>
             <th onclick="sortTable(0, 'number')">Number</th>
@@ -126,7 +138,14 @@ function sortTable(columnNumber, dataType)
             <td>{{ invoice.invoiceNumber}}</td>
             <td>{{ invoice.invoiceDate|date('d-m-Y') }}</td>
             <td>{{ invoice.deliveryDate|date('d-m-Y') }}</td>
-            <td>{{ invoice.status}}</td> 
+            <td>
+                <select class="status-dropdown" id="{{ invoice.invoiceNumber }}">
+                    {% for status in orderStatuses %}
+                    <option value="{{ status }}" onclick="saveStatus(this)"{% if status == invoice.status %} selected="selected" {% endif %}>{{ status }}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            {# <td>{{ invoice.status}}</td>  #}
             <td><a href="{{ '/order/details/' ~ invoice.InvoiceNumber }}" class="btn btn-success">Details</a></td>  
         </tr>
         {% endfor %}
