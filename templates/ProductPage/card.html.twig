@@ -55,25 +55,33 @@
         // console.log(event.target.id);
         if(dragIdNumber > dropIdNumber)
         {
-            for(let i = dragIdNumber; i > dropIdNumber; i--)
+            console.log('*********first If');
+            for(i = dragIdNumber; i > dropIdNumber; i--)
             {
-                // console.log(i);
-                // console.log('1.' + document.getElementById('colId-' + i).id)
-                // console.log('2.' + document.getElementById('dragId-' + i).id)
                 swapChild = document.getElementById('dragId-' + (i - 1));
                 targetColumn = document.getElementById('colId-' + i);
+                console.log(swapChild.id);
+                console.log(targetColumn.id);
                 targetColumn.appendChild(swapChild);
                 swapChild.id = 'dragId-' + i;
             }
-        }else if(dragIdNumber < dropIdNumber)
+        }
+        
+        if(dragIdNumber < dropIdNumber)
         {
-            console.log('first If');
+            console.log('*********Second If');
+
             for(i = dragIdNumber; i < dropIdNumber; i++)
             {
                 // console.log(i);
                 // console.log('1.' + document.getElementById('colId-' + i).id)
                 // console.log('2.' + document.getElementById('dragId-' + i).id)
-                document.getElementById('colId-' + i).appendChild(document.getElementById('dragId-' + (Number(i) + 1)));
+                swapChild = document.getElementById('dragId-' + (Number(i) + 1));
+                targetColumn = document.getElementById('colId-' + i);
+                targetColumn.appendChild(swapChild);
+                swapChild.id = 'dragId-' + i;
+                targetColumn.appendChild();
+                // document.getElementById('colId-' + i).appendChild(document.getElementById('dragId-' + (Number(i) + 1)));
             }
         }
     }
