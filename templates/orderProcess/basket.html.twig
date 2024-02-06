@@ -1,0 +1,55 @@
+{% extends '/main/base.html.twig' %}
+
+{% block title %}Shoping Basket{% endblock %}
+
+{% block body %}
+
+{% set summary = 0 %}
+<div class="container-fluid">
+{% for cart in carts %}
+        <div class="row gx-5 mt-5 product" style="height: 20rem;">
+            <div class="col-2" style="height: 100%;">
+                <img src="{{ asset('pictures/products/' ~ cart.product.pictureFilename)}}" class="card-img" alt="loading failed" style="height: 100%; width: auto; margin-left: auto; margin-right: auto; display: block; border: solid #0C134F 1rem;">
+            </div>
+            <div class="col-6">
+                {{ cart.product.name }}
+                <br><br>
+                {{ cart.product.description }}
+            </div>
+            <div class="col-3">
+                Quantity: {{ cart.amount }}
+                <div style="float: right;">
+                    <b>Price: {{ cart.product.price / 100}} €</b>
+                </div>              
+            </div>
+        </div>
+        <hr>
+        {% set summary = summary + cart.product.price * cart.amount %}
+{% endfor %}
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-8">
+            <div  style="float: right;">
+                <b>Summary:</b>
+            </div>
+        </div>
+        <div class="col-3">
+            <div  style="float: right;">
+                <b>{{ summary / 100 }} €</b>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5 mb-10">
+    <div class="col-8">
+    </div>
+    <div class="col-3">
+        <div style="float: right;">
+            <a href="/orderProcess/shipment"><button type="button" class="btn btn-primary">Proceed To Checkout!</button></a>
+        </div>
+    </div>
+</div>
+{% endblock %}

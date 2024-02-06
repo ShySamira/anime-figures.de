@@ -1,0 +1,117 @@
+{% extends '/main/base.html.twig' %}
+
+{% block title %}Homepage{% endblock %}
+
+{% block body %}
+{% if is_granted('ROLE_ADMIN') %}
+{% set position = 1%}
+{% set netSubtotal = 0 %}
+
+<div class="title">
+    <b><h1>Order Details</h1></b>
+</div>
+
+<div class="container-fluid">
+    <table class="order-details table-blank col-3">
+        <tbody>
+            <tr>
+                <th><h3>Info</h3></th>
+            </tr>
+            <tr>
+                <th>Invoice Status:</th>
+                <td>{{ invoice.status }}</td>
+            </tr>
+            <tr>
+                <th>Invoice Date:</th>
+                <td>{{ invoice.invoiceDate|date('d.m.Y') }}</td>
+            </tr>
+            <tr>
+                <th>Delivery Date:</th>
+                <td>{{ invoice.deliveryDate|date('d.m.Y') }}</td>
+            </tr>
+            <tr>
+                <th>Customer:</th>
+                <td>TO DO</td>
+            </tr>
+            <tr>
+                <th>Customer Number:</th>
+                <td>{{ user.uuid }}</td>
+            </tr>
+            <tr>
+                <th>Customer Email</th>
+                <td>{{ user.email }}</td>
+            </tr>
+            <tr>
+                <th>Invoice Number:</th>
+                <td>{{ invoice.invoiceNumber }}</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <table class="order-details table-blank col-3">
+        <tbody>
+            <tr>
+                <th><h3>Delivery Address</h3></th>
+            </tr>
+            <tr>
+                <th>Recipient:</th>
+                <td>{{ address.firstname }} {{ address.lastname }}</td>
+            </tr>
+            <tr>
+                <th>Street and Number: </th>
+                <td>{{ address.street }}</td>
+            </tr>
+            <tr>
+                <th>Zip and City:</th>
+                <td>{{ address.zipCode }} {{ address.city }}</td>
+            </tr>
+            <tr>
+                <th>Country:</th>
+                <td>{{ address.country }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <span class="table-color">
+        <table>
+            <tr>
+                <th>Pos.</th>
+                <th>Art.-Nr.</th>
+                <th>Title</th>
+                <th>Amount</th>
+                <th>Unitprice</th>
+                <th>Total Price</th>
+            </tr>
+            {% for product in products %}
+            <tr>
+                <td>{{ position }}</td>
+                <td>{{ product.id }}</td>
+                <td>{{ product.name }}</td>
+                <td>{{ product.amount }}</td>
+                <td>{{ (product.netPrice / 100)|number_format(2, ',', '.')}} €</td>
+                <td>{{ (product.netPrice * product.amount / 100)|number_format(2, ',', '.')}} €</td>
+            </tr>
+            {% set position = position + 1 %}
+            {% set netSubtotal = netSubtotal + product.netPrice * product.amount %}
+            {% endfor %}
+        </table>
+        <hr>
+
+        <div>
+            <div style="float:right; display: block; text-align: right">
+                {{ (netSubtotal / 100)|number_format(2, ',', '.')}} €<br>
+                {{ ((netSubtotal * 19 / 100) / 100)|number_format(2, ',', '.')}} €<br>
+                <hr>
+                <b>{{ ((netSubtotal * 119 / 100) / 100)|number_format(2, ',', '.')}} €</b>
+            </div>
+            <div style="float:right; display: block; margin-right: 10px; text-align: right">
+                Net-Subtotal<br>
+                19,00% Tax<br>
+                <hr>
+                <b>Subtotal</b>
+            </div>
+        </div>
+    </span>
+</div>
+{% endif %}
+{% endblock %}

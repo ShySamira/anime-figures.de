@@ -4,6 +4,10 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
+    paypal.base.url: '%env(PAYPAL_BASE_URL)%'
+    paypal.client.id: '%env(PAYPAL_CLIENT_ID)%'
+    paypal.client.secret: '%env(PAYPAL_CLIENT_SECRET)%'
+    product.picture.directory: '%kernel.project_dir%/public/pictures/products'
 
 services:
     # default configuration for services in *this* file
@@ -25,6 +29,14 @@ services:
     App\Controller\:
         resource: '../src/Controller/'
         tags: ['controller.service_arguments']
+    
+    # synthetic services don't specify a class
+    # security.context:
+    #     synthetic: true
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    App\Service\FileUploader:
+        arguments:
+            $targetDirectory: '%product.picture.directory%'

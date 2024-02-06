@@ -1,0 +1,108 @@
+.content_header{
+	background-color: blueviolet;
+}
+
+.companyAddressField{
+	background-color: blueviolet;
+	font-size: xx-large;
+}
+
+*{
+    color: #D4ADFC;
+}
+
+body{
+    background-color: #1D267D;
+}
+
+.title{
+    color: #D4ADFC;
+    font-size: 3rem;
+    
+}
+
+.navigation{
+    background-color: #0C134F;
+    
+}
+.navigation, a{
+    color: #D4ADFC;
+    text-decoration: none;
+}
+
+.product{
+    background-color: #0C134F;
+}
+
+
+.home_greeting{
+    display: flex;
+    justify-content: center;
+    font-size: 6rem;
+}
+.home_img{
+    margin-top: 6rem;
+    display: flex;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.home_img img{
+    height: 300px;
+    width: auto;
+}
+
+.orders-table
+{
+    width: 80%;
+    margin-left: 2rem;
+}
+
+.table-color table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+.table-color td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+  }
+  
+.table-color tr:nth-child(even) {
+    background-color: #0C134F;
+}
+
+.table-blank td, .table-blank th
+{
+    border: hidden;
+}
+.order-details
+{
+    float: left;
+}
+
+.status-dropdown
+{
+    background-color: #0C134F;
+}
+
+.hide
+{
+    display: none;
+}
+
+.changeOrderDialogue
+{
+    background-color: #0C134F;
+    height: auto;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    border: solid 2px #5C469C;
+    font-size: large;
+    text-align: center;
+}

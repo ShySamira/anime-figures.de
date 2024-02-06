@@ -1,0 +1,31 @@
+{% extends '/main/base.html.twig' %}
+
+{% block title %}Choose Payment{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+
+    
+        <div class="col-2">
+            <div class="card">
+                PayPal
+                {# <a target='_blank' href={{ '/orderProcess/invoice/' ~ id }} class="card-link">Choose</a> #}
+                <a href="/orderProcess/payPal">Choose</a>
+            </div>
+        </div>
+        <br>
+        <div class="col-2">
+            <div class="card">
+                test
+                <a class="card-link">Choose</a>
+            </div>
+        </div>
+        <br>
+        <div class="col-2">
+            <div class="card">
+                test
+                <a class="card-link">Choose</a>
+            </div>
+        </div>
+</div>
+{% endblock %}

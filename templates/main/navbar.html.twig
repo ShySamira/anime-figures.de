@@ -1,0 +1,34 @@
+<nav class="py-2 navigation">
+  <div class="container-fluid d-flex flex-wrap">
+    <ul class="nav me-auto">
+      <li class="nav-item"><a href="{{ path('app_home') }}" class="px-2" aria-current="page">Home</a></li>
+      <li class="nav-item"><a href="{{ path('app_products') }}" class="px-2">Products</a></li>
+      <li class="nav-item"><a href="#" class="px-2">FAQs</a></li>
+      <li class="nav-item"><a href="#" class="px-2">About</a></li>
+    </ul>
+    <ul class="nav">
+      {% if is_granted('ROLE_USER') %}
+      <li class="nav-item me-4"><a href="{{ path('app_orders')}}"><strong>Orders</strong></a></li>
+      <li class="nav-item me-4"><a href="{{ path('app_dashboard')}}"><strong>Dashboard</strong></a></li>
+      {% endif %}
+      <li>
+        <form class="col-12 col-lg-auto mb-3 mb-lg-0">
+          <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
+        </form>
+      </li>
+      <li class="nav-item">
+        <a href="{{ path('orderProcess_basket') }}" class="px-2">
+          <img src="{{asset('/pictures/basket.png')}}" style="width: 2rem;">
+          Basket
+        </a>
+      </li>
+      {% if is_granted('ROLE_USER') %}
+        <li class="nav-item"><a href="{{ path("app_logout")}}" class="px-2" style="margin-left: 1rem;">Logout</a></li>
+      {% else %}
+        <li class="nav-item"><a href="{{ path('app_login') }}" class="px-2">Login</a></li>
+        <li class="nav-item"><a href="{{ path('app_register') }}" class="px-2">Sign up</a></li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>
+

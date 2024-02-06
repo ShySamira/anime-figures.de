@@ -1,0 +1,55 @@
+ToDo:
+-add product ID to InvoieProduct
+-system fuer rabatte: anzeige ueber produktbild
+-lock checkout for unauthentiated user
+(JS)
+-make basket items deletable
+-show alt text on empty basket
+(Fix)
+-show pdf
+-set NetPrice in Invoice Entity
+-create invoice service and implement at paymentmethod
+-new categories cant be saved without parent
+
+Cart Entity:
+
+product/relation
+item_count/Int
+user/relation
+
+
+InvoiceObject
+
+invoice[
+    invoiceNumber => X
+    deliveryAddress[
+        street =>
+        Number =>
+        ...
+    ]
+    InvoiceProducts[
+        id => 1[
+            invoiceNumber => X
+            name => X
+            amount => X
+            NetPrice => X
+        ]
+        id => 2[
+            invoiceNumber => X
+            name => X
+            amount => X
+            NetPrice => X
+        ]
+    ]
+    InvoiceDate:
+    DelieryDate:
+]
+
+
+1. draggable gets dragged
+2. On drag enter -> if draggable > drop target => for each target with lesser position than draggable: append child to column with id = position + 1
+                    if draggable < drop target => for each target with lesser position than drop target: append child to column with id = position - 1
+3. OnDrop -> draggable appends to hovered column -> save position = column number -> reload
+
+
+last: prompt obens: confirm -> all items get position = column number

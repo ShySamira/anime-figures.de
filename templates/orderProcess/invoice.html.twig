@@ -1,0 +1,95 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+        {% set position = 1%}
+        {% set netSubtotal = 0 %}
+        <div>
+            <h1>Anime-Figures</h1>
+            {# <img src="C:\Dev\projects\anime-figures.com\public\pictures\logo.png" alt="Logo"> #}
+            <div style="position: absolute; top: 180px;">
+                <div style="font-size: x-small; color: blue">
+                    Anime-Figures GmbH | Dr.Mack-Str. 83 | 90441 Fuerth
+                </div>
+            </div>
+            <div style="position: absolute; top: 200px;">
+                {{ deliveryAddress.firstname }} {{ deliveryAddress.lastname }}<br>
+                {{ deliveryAddress.street }} {{ deliveryAddress.streetNumber}}<br>
+                {{ deliveryAddress.zipCode }} {{ deliveryAddress.city }}<br>
+                {{ deliveryAddress.country}}
+            </div>
+
+            <div style="position: absolute; left: 530px; top: 200px;">
+                +49 9999 / 11 11 111 <br>
+                anime-figures@info.com <br>
+                www.anime-figures.com
+            </div>
+
+            <div style="position: absolute; left: 530px; top: 320px;">
+                Invoice Date: {{ invoiceDate|date('d.m.Y') }}<br>
+                Delivery Date: {{ deliveryDate|date('d.m.Y') }}<br>
+                Customer Number: {{ deliveryAddress.user }}<br>
+                Invoice Number: {{ invoiceNumber }}
+            </div>
+
+            <div style="position: absolute; top: 400px; width: 700px">
+                <h2><b>Invoice</b></h2>
+                <hr>
+                <table style="width: 700px; border-collapse: collapse;">
+                    <tr style="border-bottom: 1px solid black;">
+                        <th style="border-right: 1px solid black;">Pos.</th>
+                        <th style="border-right: 1px solid black;">Art.-Nr.</th>
+                        <th style="border-right: 1px solid black;">Title</th>
+                        <th style="border-right: 1px solid black;">Amount</th>
+                        <th style="border-right: 1px solid black;">Unitprice</th>
+                        <th>Total Price</th>
+                    </tr>
+                    {% for product in products %}
+                    <tr>
+                        <td style="border-right: 1px solid black; text-align: center;">{{ position }}</td>
+                        <td style="border-right: 1px solid black; text-align: center;">{{ product.id }}</td>
+                        <td style="border-right: 1px solid black; text-align: center;">{{ product.name }}</td>
+                        <td style="border-right: 1px solid black; text-align: center;">{{ product.amount }}</td>
+                        <td style="text-align: right; border-right: 1px solid black;">{{ (product.netPrice / 100)|number_format(2, ',', '.')}} €</td>
+                        <td style="text-align: right;">{{ (product.netPrice * product.amount / 100)|number_format(2, ',', '.')}} €</td>
+                    </tr>
+                    {% set position = position + 1 %}
+                    {% set netSubtotal = netSubtotal + product.netPrice * product.amount %}
+                    {% endfor %}
+                </table>
+                <hr>
+
+                <div>
+                    <div style="float:right; display: block; text-align: right">
+                        {{ (netSubtotal / 100)|number_format(2, ',', '.')}} €<br>
+                        {{ ((netSubtotal * 19 / 100) / 100)|number_format(2, ',', '.')}} €<br>
+                        <hr>
+                        <b>{{ ((netSubtotal * 119 / 100) / 100)|number_format(2, ',', '.')}} €</b>
+                    </div>
+                    <div style="float:right; display: block; margin-right: 10px; text-align: right">
+                        Net-Subtotal<br>
+                        19,00% Tax<br>
+                        <hr>
+                        <b>Subtotal</b>
+                    </div>
+
+                </div>
+            </div>
+
+
+
+
+            <div style="position: absolute; top: 800px;">
+                Delivery terms: Parcel Shipping<br>
+                10 days 5% discount, 30 days without deduction
+            </div>
+
+            <div style="position: absolute; bottom: 0px; font-size:x-small; text-align: center; margin:auto">
+                Anime-Figures GmbH | Sparkasse Nürnberg | IBAN DE35 2953 0000 0624 3623 65 | BIC DS1KAL3u | Place Of Business Fürth, Germany<br>
+                Managing Directors: Samira Sango | Commercial Register: AG Fürth HRB 123456 | USt-IdNr. DE32124252<br>
+                THIS IS NO VALID INVOICE lul 
+            </div>
+        </div>
+    </body>
+</html>

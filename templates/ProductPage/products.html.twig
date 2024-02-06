@@ -1,0 +1,18 @@
+{% extends '/main/base.html.twig' %}
+
+{% block title %}Homepage{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        {% include 'ProductPage/card.html.twig' %}
+    </div>
+    <div class="changeOrderDialogue hide" id="changeOrderDialoguePrompt">
+        <div class="mb-2">
+            Save changes made to the arrangement of the products?
+        </div>
+        <div class="mb-3">
+            <button type="button" class="btn btn-success" onclick="uploadNewPositions()">Save changes</button>
+            <button type="button" class="btn btn-danger" onclick="location.reload()">Cancel</button>
+        </div>
+    </div>
+{% endblock %}

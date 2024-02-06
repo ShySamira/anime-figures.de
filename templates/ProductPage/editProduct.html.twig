@@ -1,0 +1,50 @@
+{% extends '/main/base.html.twig' %}
+
+{% block title %}Shipment{% endblock %}
+
+{% block body %}
+{% if is_granted('ROLE_ADMIN') %}
+<script>
+    function newCategory()
+    {
+        let category = [];
+        category.push(prompt("Please enter the name of the new category", "Category name"));
+
+        if(category[0] != null)
+        {
+            if(confirm("Shall this be a subcategory?"))
+            {
+                category.push(prompt("Enter the name of the parent category", "Category name"));
+            }
+
+            var xhttp = new XMLHttpRequest();
+
+            xhttp.open("POST", "/product/category/new", false);
+            xhttp.send(category);
+            location.reload();
+        }
+    }
+
+    function changeToDraft(checkbox)
+    {
+        if(checkbox.checked)
+        {
+            alert('If you change from live to draft, any cart position containing this product will be deleted!');
+        }
+    }
+</script>
+
+
+    <div class="container" style="margin-top: 3rem; width: 60rem">
+        <div class="card product" style="color:#D4ADFC">
+            <div class="card-body">
+                <h1>Edit Product</h1>
+
+                {{form(form)}}
+            </div>
+
+        </div>
+
+    </div>
+{% endif %}
+{% endblock %}
