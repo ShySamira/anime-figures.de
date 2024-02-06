@@ -1,4 +1,7 @@
 <script>
+    let itemIsBeingDragged;
+    let productCount = '{{ products|length|e("js") }}';
+
     function confirmDelete(product)
     {
         var productName = product.dataset.name;
@@ -25,15 +28,22 @@
 
     function dragEnd(event)
     {
+        event.preventDefault();
 
+        setTimeout(() => {
+            event.target.classList.remove('hide');
+        }, 0);
     }
 
     function dragStart(event)
     {
         event.dataTransfer.setData('text/plain', event.target.id);
+
         setTimeout(() => {
             event.target.classList.add('hide');
         }, 0);
+
+        itemIsBeingDragged = true;
     }
     function dragEnter(event)
     {
@@ -42,76 +52,79 @@
         let targetColumn;
         let i = 0;
         let dragId = event.dataTransfer.getData('text/plain');
-        let dragIdNumber = dragId.split('-')[1];
+        let dragIdNumber = Number(dragId.split('-')[1]);
         let dropId = event.target.id;
-        let dropIdNumber = dropId.split('-')[1];
+        let dropIdNumber = Number(dropId.split('-')[1]);
 
-        // console.log('enter');
-        // console.log('drag: ' + dragId);
-        // console.log('drop: ' + dropId);
-
-        // console.log('dragNumber = ' + dragIdNumber);
-        // console.log('dropNumber = ' + dropIdNumber);
-        // console.log(event.target.id);
-        if(dragIdNumber > dropIdNumber)
+        if(dragIdNumber > dropIdNumber && itemIsBeingDragged == true)
         {
-            console.log('*********first If');
             for(i = dragIdNumber; i > dropIdNumber; i--)
             {
                 swapChild = document.getElementById('dragId-' + (i - 1));
                 targetColumn = document.getElementById('colId-' + i);
-                console.log(swapChild.id);
-                console.log(targetColumn.id);
                 targetColumn.appendChild(swapChild);
                 swapChild.id = 'dragId-' + i;
             }
+
+            itemIsBeingDragged = false;
         }
         
-        if(dragIdNumber < dropIdNumber)
+        if(dragIdNumber < dropIdNumber && itemIsBeingDragged == true)
         {
-            console.log('*********Second If');
-
             for(i = dragIdNumber; i < dropIdNumber; i++)
             {
-                // console.log(i);
-                // console.log('1.' + document.getElementById('colId-' + i).id)
-                // console.log('2.' + document.getElementById('dragId-' + i).id)
                 swapChild = document.getElementById('dragId-' + (Number(i) + 1));
                 targetColumn = document.getElementById('colId-' + i);
                 targetColumn.appendChild(swapChild);
                 swapChild.id = 'dragId-' + i;
-                targetColumn.appendChild();
-                // document.getElementById('colId-' + i).appendChild(document.getElementById('dragId-' + (Number(i) + 1)));
             }
-        }
+
+            itemIsBeingDragged = false;
+        }    
     }
 
     function dragLeave(event)
     {
-        // console.log('leave');
         event.preventDefault();
         var dragId = event.dataTransfer.getData('text/plain');
         var dragIdNumber = dragId.split('-')[1];
         var dropId = event.target.id;
         var dropIdNumber = dropId.split('-')[1];
-
-
     }
 
     function drop(event)
     {
-        var dragId = event.dataTransfer.getData('text/plain');
-        var dragIdNumber = dragId.split('-')[1];
+        let dragId = event.dataTransfer.getData('text/plain');
+        let dragIdNumber = dragId.split('-')[1];
         let dropId = event.target.id;
         let dropIdNumber = dropId.split('-')[1];
-
         let dragItem = document.getElementById(dragId);
-        setTimeout(() => {
-            dragItem.classList.remove('hide');
-        }, 0);
+
         event.target.appendChild(dragItem);
         dragItem.id = 'dragId-' + dropIdNumber;
 
+        setTimeout(() => {
+            document.getElementById('changeOrderDialoguePrompt').classList.remove('hide');
+        }, 0);
+    }
+
+    function uploadNewPositions()
+    {
+        let newProductPositions = [];
+        let product;
+        let i;
+        let xhttp = new XMLHttpRequest();
+
+        for(i = 1; i <= productCount; i++)
+        {
+            product = 'dragId-'+ Number(i);
+            newProductPositions.push(document.getElementById(product).dataset.name);
+        }
+
+        console.log(newProductPositions);
+        xhttp.open("POST", "/product/change/position", false);
+        xhttp.send(newProductPositions);
+        location.reload();
     }
 </script>
 
@@ -144,10 +157,10 @@
     {% set i = i + 1 %}
     {% endif %}
     {% if product.draft == false %}
-        <div class="col-3" id="{{ 'colId-' ~ product.position }}" ondragenter="dragEnter(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="drop(event)" style="z-index: 10;">
-            <div class="card product" style="width:450px; height: 600px;" id="{{ 'dragId-'  ~ product.position }}" draggable="true" ondragstart="dragStart(event)" ondrag="drag(event)" ondragend="dragEnd(event)">
+        <div class="col-3" id="{{ 'colId-' ~ product.position }}" ondragenter="dragEnter(event)" ondragover="allowDrop(event)" ondrop="drop(event)">
+            <div class="card product" style="width:450px; height: 600px;" id="{{ 'dragId-'  ~ product.position }}" data-name="{{ product.name }}" draggable="true" ondragstart="dragStart(event)" ondrag="drag(event)" ondragend="dragEnd(event)">
                 <div class="card-header" style="color:#D4ADFC;">{{ product.name }}</div>
-                <div class="card-body" style="padding: 0%; height: 50%;"> {# justify-content: center #}
+                <div class="card-body" style="padding: 0%; height: 50%;">
                     <img src="{{ asset('pictures/products/' ~ product.pictureFilename)}}" class="card-img" alt="loading failed" style="height: 100%; width: auto; margin-left: auto; margin-right: auto; display: block; border: solid #0C134F 1rem">
                 </div>
                 <div class="card-footer">
@@ -165,9 +178,9 @@
     {% set i = i + 1 %}
     {% elseif product.draft == true and is_granted('ROLE_ADMIN') %}
         <div class="col-3" id="{{ 'colId-' ~ product.position }}" ondragenter="dragEnter(event)"  ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="drop(event)">
-            <div class="card product" style="width:450px; height: 600px;" id="{{ 'dragId-'  ~ product.position }}" draggable="true" ondragstart="dragStart(event)" ondrag="drag(event)" ondragend="dragEnd(event)">
+            <div class="card product" style="width:450px; height: 600px;" id="{{ 'dragId-'  ~ product.position }}" data-name="{{ product.name }}" draggable="true" ondragstart="dragStart(event)" ondrag="drag(event)" ondragend="dragEnd(event)">
                 <div class="card-header" style="color:#D4ADFC;">{{ product.name }}</div>
-                <div class="card-body" style="padding: 0%; height: 50%;"> {# justify-content: center #}
+                <div class="card-body" style="padding: 0%; height: 50%;">
                     <img src="{{ asset('pictures/products/' ~ product.pictureFilename)}}" class="card-img" alt="loading failed" style="height: 100%; width: auto; margin-left: auto; margin-right: auto; display: block; border: solid #0C134F 1rem; opacity: 0.2">
                     <div style="position: absolute; top: 30%; left: 13.7%; font-size:7rem; transform: rotate(45deg)">
                         DRAFT
@@ -192,9 +205,8 @@
     {% if i == 4 %}
         {% set rowFull = true %}
         {% set i = 0 %}   
-    </div>
+        </div>
+    {% elseif loop.index == products|length %}
+        </div>
     {% endif %}
-
-    {# {% set i = i + 1 %} #}
-    
 {% endfor %}

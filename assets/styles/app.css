@@ -93,3 +93,16 @@ body{
 {
     display: none;
 }
+
+.changeOrderDialogue
+{
+    background-color: #0C134F;
+    height: auto;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    border: solid 2px #5C469C;
+    font-size: large;
+    text-align: center;
+}

@@ -59,6 +59,11 @@ class Product
      */
     private $position;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $main_picture_filename;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -156,6 +161,18 @@ class Product
     public function setPosition(int $position): self
     {
         $this->position = $position;
+
+        return $this;
+    }
+
+    public function getMainPictureFilename(): ?string
+    {
+        return $this->main_picture_filename;
+    }
+
+    public function setMainPictureFilename(?string $main_picture_filename): self
+    {
+        $this->main_picture_filename = $main_picture_filename;
 
         return $this;
     }
