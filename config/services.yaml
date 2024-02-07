@@ -40,3 +40,7 @@ services:
     App\Service\FileUploader:
         arguments:
             $targetDirectory: '%product.picture.directory%'
+
+    App\Form\EditProductType:
+        arguments:
+            $targetDirectory: '%product.picture.directory%'

@@ -173,6 +173,7 @@ class ProductController extends AbstractController
             'category',
         ];
         $product = $this->getDoctrine()->getRepository(Product::class)->find($id);
+
         $form = $this->createForm(EditProductType::class, $product);
         $form->handleRequest($request);
         
@@ -180,12 +181,21 @@ class ProductController extends AbstractController
         {
             $entityManager = $this->getDoctrine()->getManager();
             $product = $form->getData();
-
+            /** @var UploadedFile $pictureFile */
             $pictureFile = $form->get('picture')->getData();
             if($pictureFile)
             {
                 $pictureFilename = $fileUploader->upload($pictureFile);
-                $product->setPictureFilename($pictureFilename);
+                if($product->getMainPictureFilename())
+                {
+                    $productFilenames = $product->getPicturesFilenames();
+                    $productFilenames[] = $pictureFilename;
+                    $product->setPicturesFilenames($productFilenames);
+                }else
+                {
+                    $product->setMainPictureFilename($pictureFilename);
+                }
+
             }
             
             $productName = $product->getName();

@@ -7,6 +7,9 @@ use App\Entity\Product;
 use App\Service\Categorys;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Asset\PathPackage;
+use Symfony\Component\Asset\VersionStrategy\StaticVersionStrategy;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -22,17 +25,25 @@ use Symfony\Component\Validator\Constraints\File;
 class EditProductType extends AbstractType
 {
     private $entityManager;
+    private $pathPackage;
+    private $targetDirectory;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(EntityManagerInterface $entityManager, $targetDirectory)
     {
         $this->entityManager = $entityManager;
+        $this->pathPackage = new PathPackage('/pictures/products', new StaticVersionStrategy('v1'));
+        $this->targetDirectory = $targetDirectory;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        // $categorys = $this->categorys->getChoices();
-        // $categorys = $this->entityManager->getRepository(Category::class)->findBy();
         $categorys = $this->entityManager->getRepository(Category::class)->findAllSubcategorys();
+
+        $choices = $options['data']->getPicturesFilenames();
+        array_unshift($choices, $options['data']->getMainPictureFilename());
+
+        // $pathPackage = new PathPackage('/pictures/products', new StaticVersionStrategy('v1'));
+        // dd($pathPackage->getUrl('pp_umaru-65c21b71a769c.jpeg'));
 
         $builder
         ->add('name', TextType::class)
@@ -77,6 +88,28 @@ class EditProductType extends AbstractType
                 ])
             ],
         ])
+        ->add('mainPictureFilename', ChoiceType::class,[
+            'label' => 'Main picture',
+            'attr' => ['style' => 'display:table-row;'],
+            'choices' => $choices,
+            'choice_label' => function ($choice, $key, $value){
+                return $choice;
+            },
+            'choice_attr' => function($choice, $key, $value){
+                return [
+                    'id' => $value,
+                    'style' => '
+                        background-image:url(' . $this->pathPackage->getUrl('hp_hanji-65c38308770ef.jpeg') . ');
+                        background-repeat: no-repeat;
+                        background-attachment: fixed;
+                        background-size: cover;
+                        display:table-column;
+                        height: 100px;
+                        '
+                ];
+            },
+
+        ])
         ->add('draft', CheckboxType::class, [
             'label' => 'Save as Draft?',
             'attr' => [
@@ -108,3 +141,4 @@ class EditProductType extends AbstractType
         ]);
     }
 }
+// ' . '/public/pictures/products/pp_umaru-65c21b71a769c.jpeg' . '

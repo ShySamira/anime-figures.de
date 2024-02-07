@@ -64,6 +64,11 @@ class Product
      */
     private $main_picture_filename;
 
+    /**
+     * @ORM\Column(type="simple_array", nullable=true)
+     */
+    private $picturesFilenames = [];
+
     public function getId(): ?int
     {
         return $this->id;
@@ -173,6 +178,18 @@ class Product
     public function setMainPictureFilename(?string $main_picture_filename): self
     {
         $this->main_picture_filename = $main_picture_filename;
+
+        return $this;
+    }
+
+    public function getPicturesFilenames(): ?array
+    {
+        return $this->picturesFilenames;
+    }
+
+    public function setPicturesFilenames(?array $picturesFilenames): self
+    {
+        $this->picturesFilenames = $picturesFilenames;
 
         return $this;
     }

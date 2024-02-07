@@ -32,6 +32,8 @@
             alert('If you change from live to draft, any cart position containing this product will be deleted!');
         }
     }
+
+
 </script>
 
 
@@ -39,12 +41,44 @@
         <div class="card product" style="color:#D4ADFC">
             <div class="card-body">
                 <h1>Edit Product</h1>
+                {# {{form(form)}} #}
 
-                {{form(form)}}
+                {{ form_start(form) }}
+                    {{ form_row(form.name) }}
+                    {{ form_row(form.category) }}
+                    {{ form_row(form.newCategory) }}
+                    {{ form_row(form.description) }}
+                    {{ form_row(form.price) }}
+                    {{ form_row(form.picture) }}
+                    <div class="mainPictureChoice" id="mainPictureChoice">
+                        {{ form_label(form.mainPictureFilename) }}
+                        {{ form_errors(form.mainPictureFilename) }}
+                        
+                        {{ form_widget(form.mainPictureFilename) }}
+                    </div>
+                    {{ form_row(form.draft) }}
+                    {{ form_row(form.submit) }}
+                    {{ form_row(form.cancel) }}
+                {{ form_end(form) }}
+
+                {# <img src="{{ asset('pictures/products/' ~ 'pp_umaru-65c21b71a769c.jpeg') }}" class="w-10"> #}
+                <div style="background-image:url(/public/pictures/products/pp_umaru-65c21b71a769c.jpeg); height: 200px">
+                    test
+                </div>
             </div>
 
         </div>
 
     </div>
+    <script>
+        let options = document.getElementById('edit_product_picturesFilenames').children 
+
+        for(const option of options) {
+            option.removeAttribute('selected');
+        }
+
+        options[0].setAttribute('selected', 'selected');
+
+    </script>
 {% endif %}
 {% endblock %}

@@ -10,3 +10,23 @@ import './styles/app.css';
 
 // start the Stimulus application
 import './bootstrap';
+
+// customize some Bootstrap variables
+
+
+// the ~ allows you to reference things in node_modules
+import "/node_modules/bootstrap/scss/bootstrap.scss";
+
+//bootstrap js import
+const $ = require('jquery');
+// this "modifies" the jquery module: adding behavior to it
+// the bootstrap module doesn't export/return anything
+require('bootstrap');
+
+// or you can include specific pieces
+// require('bootstrap/js/dist/tooltip');
+// require('bootstrap/js/dist/popover');
+
+$(document).ready(function() {
+    $('[data-toggle="popover"]').popover();
+});

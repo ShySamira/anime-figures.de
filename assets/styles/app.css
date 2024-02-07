@@ -1,3 +1,7 @@
+.w-10{
+    width: 10%;
+}
+
 .content_header{
 	background-color: blueviolet;
 }
@@ -105,4 +109,9 @@ body{
     border: solid 2px #5C469C;
     font-size: large;
     text-align: center;
+}
+
+.mainPictureChoice option
+{
+    height: 200px;
 }
